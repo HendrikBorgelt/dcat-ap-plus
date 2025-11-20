@@ -91,10 +91,3 @@ jobs:
           verbose: true
 
 # [1] https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
-# Used actions: (updates managed by dependabot)
-# - https://github.com/actions/checkout
-# - https://github.com/astral-sh/setup-uv
-# - https://github.com/actions/setup-python
-# - https://github.com/actions/upload-artifact
-# - https://github.com/actions/download-artifact
-# - https://github.com/pypa/gh-action-pypi-publish/

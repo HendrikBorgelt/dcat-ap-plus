@@ -110,7 +110,7 @@ Core developers should read the material on the [LinkML site](https://linkml.io/
     - Non-categorical values, e.g. descriptive fields like `name` or `description` fall outside of this.
 - Reuse
     - Existing scheme elements should be reused where appropriate, rather than making duplicative elements
-    - More specific classes can be created by refinining classes using inheritance (`is_a`)
+    - More specific classes can be created by refining classes using inheritance (`is_a`)
 
 [about-branches]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches
 [about-issues]: https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues
