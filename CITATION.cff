@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software in your work, please cite it using the following metadata."
+authors:
+- family-names: "Strömert"
+  given-names: "Philip"
+  orcid: "https://orcid.org/0000−0002−1595−3213"
+- family-names: "Linke"
+  given-names: "David"
+  orcid: "https://orcid.org/0000−0002−5898−1820"
+- family-names: "Doerr"
+  given-names: "Mark"
+  orcid: "https://orcid.org/0000−0003−3270−6895"
+- family-names: "Borgelt"
+  given-names: "Hendrik"
+  orcid: "https://orcid.org/0000−0001−5886−7860"
+title: "ChemDCAT-AP: Enabling Semantic Interoperability with a Contextual Extension of DCAT-AP"
+version: 0.1.0 rc1
+doi: https://doi.org/10.5281/zenodo.17702369
+date-released: 2025-11-03
+url: "https://github.com/nfdi-de/dcat-ap-plus"
