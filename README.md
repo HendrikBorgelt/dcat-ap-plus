@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/1080296103.svg)](https://doi.org/10.5281/zenodo.17702369)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17702370.svg)](https://doi.org/10.5281/zenodo.17702370)
 [![PyPI - Version](https://img.shields.io/pypi/v/dcat-ap-plus)](https://pypi.org/project/dcat-ap-plus)
 [![Build and test](https://github.com/nfdi-de/dcat-ap-plus/actions/workflows/main.yaml/badge.svg)](https://github.com/nfdi-de/dcat-ap-plus/actions/workflows/main.yaml)
 [![Copier Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/copier-org/copier/master/img/badge/badge-grayscale-inverted-border-teal.json)](https://github.com/linkml/linkml-project-copier) 
