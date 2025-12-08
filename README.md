@@ -18,7 +18,7 @@ in that it makes the `prov:wasGeneratedBy` property of the `Dataset` class manda
 The choice to use LinkML for extending DCAT-AP was based on the need to have different layers that cater to different domain-specific use case. DCAT-AP+ serves as the basic layer for such extensions and is thus kept very generic. Being the basis of the [ChemDCAT-AP](
 nfdi-de.github.io/chem-dcat-ap), one can see how it can be applied to further extend its classes for domain-specific needs.
 
-DCAT-AP+ was initially developed as a close collaboration between [NFDI4Chem](https://nfdi4chem.de) & [NFDI4Cat](https://nfdi4cat.org/) and is intended to be further improved, extended and adapted by the whole NFDI community.
+DCAT-AP+ is developed within close collaboration between [NFDI4Chem](https://nfdi4chem.de) & [NFDI4Cat](https://nfdi4cat.org/) and is intended to be further improved, extended and adapted by the whole NFDI community.
 
 A more elaborate documentation is provided here: [https://nfdi-de.github.io/dcat-ap-plus](hhttps://nfdi-de.github.io/dcat-ap-plus/latest/about/).
 
