@@ -1,6 +1,6 @@
 # Automatic generation of DCAT-AP+
-In order to build an extension of DCAT-AP, we needed to faithfully translate it into a LinkML schema first. 
-For this, we used the JSON-LD serialization of the official DCAT-AP 3.0.0 SHACL shapes ([dcat_ap_shacl.jsonld](src/dcat_ap_shacl.jsonld)), 
+In order to build an extension of DCAT-AP, a faithful translation of DCAT-AP into a LinkML schema was provided first.
+For this, the JSON-LD serialization of the official DCAT-AP 3.0.0 SHACL shapes ([dcat_ap_shacl.jsonld](src/dcat_ap_shacl.jsonld)) were used, 
 which we downloaded from the DCAT-AP GitHub repository [3.0.0 release folder within the master branch](https://github.com/SEMICeu/DCAT-AP/tree/master/releases/3.0.0/shacl). 
 These SHACL shapes were then processed by the 
 [dcat_ap_shacl_2_linkml.py](https://github.com/nfdi-de/dcat-ap-plus/blob/main/src/dcat_ap_plus/dcat_ap_shacl_2_linkml.py) 
