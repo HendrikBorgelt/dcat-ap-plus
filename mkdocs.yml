@@ -77,12 +77,12 @@ watch:
 
 nav:
   - Home: index.md
+  - Design Patterns: design-patterns.md
+  - Automatic Generation: automatic-generation.md
   - Schema: elements/overview.md
   - Versioning: versioning.md
-  - About: about.md
-  - Automatic Generation: automatic-generation.md
-  - Design Patterns: design-patterns.md
   - Users: dcat-ap-plus-users.md
+  - About: about.md
 
 # enable version selector for multi-version support
 extra:
