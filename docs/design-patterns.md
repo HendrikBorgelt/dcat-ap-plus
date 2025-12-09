@@ -5,7 +5,7 @@ dataset is actually about or on the process used to create it. For specifying th
 the properties: `dcterms:description`, `dcterms:keyword` and `dcat:theme`, and for specifying its creation context there 
 is the property `prov:wasGeneratedBy` that expects an instance of the `prov:Activity` class.
 The former three have the limitation of either expecting only free text, or, in the case of `theme`, only a very small
-but too general controlled vocabulary. The limitation of the latter lies i nthe fact that the Activity class is only
+but too general controlled vocabulary. The limitation of the latter lies in the fact that the Activity class is only
 considered a "Supportive Entity" and thus not further specified with any properties.
 
 DCAT-AP+ addresses this gap, by mainly reusing the [Starting Point Terms of the Provenance Ontology (PROV-O)](https://www.w3.org/TR/prov-o/#description-starting-point-terms), 
