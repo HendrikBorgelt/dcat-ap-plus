@@ -15,7 +15,7 @@ The LinkML schema provided in this repository is an extension of the [DCAT Appli
 This extension is mainly based on the [Starting Point Terms of the Provenance Ontology (PROV-O)](https://www.w3.org/TR/prov-o/#description-starting-point-terms), 
 in that it makes the `prov:wasGeneratedBy` property of the `Dataset` class mandatory and specifies necessary properties for its expected range, the `prov:Activity` class.
 
-The choice to use LinkML for extending DCAT-AP was based on the need to have different layers that cater to different domain-specific use case. DCAT-AP+ serves as the basic layer for such extensions and is thus kept very generic. Being the basis of the [ChemDCAT-AP](
+The choice to use LinkML for extending DCAT-AP was based on the need to have different layers that cater to different domain-specific use cases. DCAT-AP+ serves as the basic layer for such extensions and is thus kept very generic. Being the basis of the [ChemDCAT-AP](
 nfdi-de.github.io/chem-dcat-ap), one can see how it can be applied to further extend its classes for domain-specific needs.
 
 DCAT-AP+ is developed within close collaboration between [NFDI4Chem](https://nfdi4chem.de) & [NFDI4Cat](https://nfdi4cat.org/) and is intended to be further improved, extended and adapted by the whole NFDI community.
@@ -24,7 +24,7 @@ A more elaborate documentation is provided here: [https://nfdi-de.github.io/dcat
 
 ## DCAT-AP to LinkML: Automatic Translation and Extension
 
-The JSON-LD serialization of the official DCAT-AP 3.0.0 SHACL shapes ([dcat_ap_shacl.jsonld](src/dcat_ap_shacl.jsonld)) where downloaded from the DCAT-AP GitHub repository [3.0.0 release folder within the master branch](https://github.com/SEMICeu/DCAT-AP/tree/master/releases/3.0.0/shacl). The downloaded SHACL shapes were then processed by the [dcat_ap_shacl_2_linkml.py](src/dcat_ap_shacl_2_linkml.py) script to generate two LinkML schemas from it:
+The JSON-LD serialization of the official DCAT-AP 3.0.0 SHACL shapes ([dcat_ap_shacl.jsonld](src/dcat_ap_shacl.jsonld)) were downloaded from the DCAT-AP GitHub repository [3.0.0 release folder within the master branch](https://github.com/SEMICeu/DCAT-AP/tree/master/releases/3.0.0/shacl). The downloaded SHACL shapes were then processed by the [dcat_ap_shacl_2_linkml.py](src/dcat_ap_shacl_2_linkml.py) script to generate two LinkML schemas from it:
 
   * [dcat_ap_linkml.yaml](src/dcat_ap_plus/schema/dcat_ap_linkml.yaml) - an almost 1:1 translation of the DCAT-AP SHACL shapes to LinkML.
   * [dcat_ap_plus.yaml](src/dcat_ap_plus/schema/dcat_ap_plus.yaml) - the LinkML representation of DCAT-AP to which we added the additional constraints, classes and properties we need for our DCAT-AP+ extension.
