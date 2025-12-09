@@ -11,8 +11,10 @@ considered a "Supportive Entity" and thus not further specified with any propert
 DCAT-AP+ addresses this gap, by mainly reusing the [Starting Point Terms of the Provenance Ontology (PROV-O)](https://www.w3.org/TR/prov-o/#description-starting-point-terms), 
 but also the [QUDT ontology](https://www.qudt.org/) and the [DCTerms vocabulary](http://purl.org/dc/terms/), as depicted in the following UML 
 class diagram (taken from the forthcoming MTSR2025 paper) and the graphical representation of the DCAT-AP+ base pattern. 
-![UML-diagramm.png](images/UML-diagramm.png)
-![img.png](images/dcat-ap-plus-base-pattern.png)
+![DCAT-AP-PLUS UML-diagramm](images/DCAT-AP-PLUS_UML_only_dark.svg#only-dark)
+![DCAT-AP-PLUS UML-diagramm](images/DCAT-AP-PLUS_UML_only_light.svg#only-light)
+![DCAT-AP-PLUS_base_pattern_dark.svg](images/DCAT-AP-PLUS_base_pattern_dark.svg#only-dark)
+![DCAT-AP-PLUS_base_pattern_light.svg](images/DCAT-AP-PLUS_base_pattern_light.svg#only-light)
 
 ## Lifting PROV-O's Activity to a first class citizen
 We added PROV-O aligned slots (e.g., `had_input_entity`, `had_input_activity`, ...) to the 
