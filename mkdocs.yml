@@ -1,5 +1,5 @@
 ---
-site_name: "dcat-ap-plus Documentation"
+site_name: "DCAT-AP+ Documentation"
 site_url: https://nfdi-de.github.io/dcat-ap-plus
 repo_url: https://github.com/nfdi-de/dcat-ap-plus
 
@@ -77,8 +77,11 @@ watch:
 
 nav:
   - Home: index.md
+  - Design Patterns: design-patterns.md
+  - Automatic Generation: automatic-generation.md
   - Schema: elements/overview.md
   - Versioning: versioning.md
+  - Users: dcat-ap-plus-users.md
   - About: about.md
 
 # enable version selector for multi-version support
