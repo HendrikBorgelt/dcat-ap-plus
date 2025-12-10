@@ -12,7 +12,7 @@
     "https://gitlab.com/opensourcelab/scientificdata/scidats/-/blob/feature/linkml-schemata/schemata/metadata_model_scidats_dcat_ap.yaml?ref_type=heads"
   ],
   "id": "https://w3id.org/nfdi-de/dcat-ap-plus/",
-  "version": "0.1.0rc1.post21.dev0+3faed58",
+  "version": "0.1.0rc3.post16.dev0+67e459b",
   "imports": [
     "linkml:types"
   ],
@@ -7795,9 +7795,9 @@
   ],
   "metamodel_version": "1.7.0",
   "source_file": "dcat_ap_plus.yaml",
-  "source_file_date": "2025-11-24T16:42:12",
+  "source_file_date": "2025-12-10T11:24:32",
   "source_file_size": 90872,
-  "generation_date": "2025-11-24T16:42:41",
+  "generation_date": "2025-12-10T11:24:52",
   "@type": "SchemaDefinition",
   "@context": [
     "project\\jsonld/dcat_ap_plus.context.jsonld",
