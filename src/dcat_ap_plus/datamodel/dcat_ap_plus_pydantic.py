@@ -27,7 +27,7 @@ from pydantic import (
 
 
 metamodel_version = "None"
-version = "0.1.0rc1.post21.dev0+3faed58"
+version = "0.1.0rc3.post21.dev0+913fb36"
 
 
 class ConfiguredBaseModel(BaseModel):
@@ -61,7 +61,7 @@ class LinkMLMeta(RootModel):
         return key in self.root
 
 
-linkml_meta = LinkMLMeta({'default_prefix': 'dcatap_plus',
+linkml_meta = LinkMLMeta({'default_prefix': 'dcatapplus',
      'default_range': 'string',
      'description': 'This metadata schema is an Extension of the DCAT Application '
                     'Profile for Providing Links to Use-case Specific Context. It '
@@ -99,8 +99,8 @@ linkml_meta = LinkMLMeta({'default_prefix': 'dcatap_plus',
                            'prefix_reference': 'http://www.w3.org/ns/dcat#'},
                   'dcatap': {'prefix_prefix': 'dcatap',
                              'prefix_reference': 'http://data.europa.eu/r5r/'},
-                  'dcatap_plus': {'prefix_prefix': 'dcatap_plus',
-                                  'prefix_reference': 'https://w3id.org/nfdi-de/dcat-ap-plus/'},
+                  'dcatapplus': {'prefix_prefix': 'dcatapplus',
+                                 'prefix_reference': 'https://w3id.org/nfdi-de/dcat-ap-plus/'},
                   'dcterms': {'prefix_prefix': 'dcterms',
                               'prefix_reference': 'http://purl.org/dc/terms/'},
                   'eli': {'prefix_prefix': 'eli',
