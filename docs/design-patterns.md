@@ -1,69 +1,427 @@
 # Design Patterns & Decisions of DCAT-AP+
 
-DCAT-AP is currently limited regarding the ability to provide domain-specific and ontology aligned metadata on what a 
-dataset is actually about or on the process used to create it. For specifying the subject of a dataset, there are only 
-the properties: `dcterms:description`, `dcterms:keyword` and `dcat:theme`, and for specifying its creation context there 
-is the property `prov:wasGeneratedBy` that expects an instance of the `prov:Activity` class.
-The former three have the limitation of either expecting only free text, or, in the case of `theme`, only a very small
-but too general controlled vocabulary. The limitation of the latter lies in the fact that the Activity class is only
-considered a "Supportive Entity" and thus not further specified with any properties.
+## Why DCAT-AP+ exists
 
-DCAT-AP+ addresses this gap, by mainly reusing the [Starting Point Terms of the Provenance Ontology (PROV-O)](https://www.w3.org/TR/prov-o/#description-starting-point-terms), 
-but also the [QUDT ontology](https://www.qudt.org/) and the [DCTerms vocabulary](http://purl.org/dc/terms/), as depicted in the following UML 
-class diagram (taken from the forthcoming MTSR2025 paper) and the graphical representation of the DCAT-AP+ base pattern. 
-![DCAT-AP-PLUS UML-diagramm](images/DCAT-AP-PLUS_UML_only_dark.svg#only-dark)
-![DCAT-AP-PLUS UML-diagramm](images/DCAT-AP-PLUS_UML_only_light.svg#only-light)
-![DCAT-AP-PLUS_base_pattern_dark.svg](images/DCAT-AP-PLUS_base_pattern_dark.svg#only-dark)
-![DCAT-AP-PLUS_base_pattern_light.svg](images/DCAT-AP-PLUS_base_pattern_light.svg#only-light)
+### The gap in DCAT-AP
 
-## Lifting PROV-O's Activity to a first class citizen
-We added PROV-O aligned slots (e.g., `had_input_entity`, `had_input_activity`, ...) to the 
-[Activity](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/Activity/) class that allow one to further 
-specify the input and output of an activity as well as its parts.
-To provide the proper ranges for these new slots, we also added the classes [Entity](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/Entity/) and [AgenticEntity](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/AgenticEntity/) based on PROV-O's `Entity` and `Agent` class. 
-The renaming of the latter was made due to the fact that DCAT-AP already reuses the `foaf:Agent` class to refer to 
-people or organisations somehow responsible for the provenance of a dataset. While the `AgenticEntity` class could be 
-used similarly to `foaf:Agnet` to specify people or organisations responsible for an activity taking place, this class 
-is rather intended to be used for specifying the tools used in activities.
+DCAT-AP provides a robust metadata foundation for describing datasets across European data portals. However, it was designed for *discoverability*, not for capturing the *scientific context* of how data was generated or what it is about. Concretely, DCAT-AP offers only three ways to describe a dataset's subject matter:
 
-### Dedicated classes for the data generation context
-Since DCAT-AP+ focuses particularly on the kind of activity that created a dataset (e.g., a certain spectroscopy), we 
-defined a subclass of `Activity`, called [DataGeneratingActivity](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/DataGeneratingActivity/) and used it instead as the range of the 
-[was_generated_by](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/was_generated_by/) property.
-This class it is related to the additional classes [EvaluatedEntity](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/EvaluatedEntity/) 
-and [EvaluatedActivity](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/EvaluatedActivity/) with 
-slots that are specializations of the ones inherited from its parent class. These two new classes represent the entity 
-or process that was being evaluated by a `DataGeneratingActivity`, so what the resulting dataset is actually about. 
-Consequently, these two classes were also related directly to the `Dataset` class via the `is_about_entity` and 
-`is_about_activity` slots.
+| DCAT-AP property        | Limitation                                                                                                                                                                    |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `dcterms:description`   | Free text — not machine-actionable                                                                                                                                            |
+| `dcat:keyword`          | Free text — not machine-actionable                                                                                                                                            |
+| `dcat:theme`            | Restricted to the [EU Dataset Theme Vocabulary](https://op.europa.eu/s/zXIN) — too coarse for domain-specific discovery (e.g. no way to distinguish NMR from IR spectroscopy) |
 
-To be able to represent uses cases in which a dataset was generated by a `DataGeneratingActivity` that is actually an 
-analysis of previously generated data, we also added the subclasses [DataAnalysis](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/DataAnalysis/), [AnalysisDataset](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/AnalysisDataset/) and [AnalysisSourceData](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/AnalysisSourceData/).
+For describing how a dataset was created, DCAT-AP provides `prov:wasGeneratedBy` linking to a `prov:Activity`, but this `Activity` node shape is classified as a mere "Supportive Entity" — it has **no specified properties**. It is a structural dead end: you can say a dataset was generated by *some activity*, but not *what kind of activity*, not *what was evaluated, observed or measured*, nor *which instruments were used*. This has to be defined in DCAT-AP extensions.
 
-## Providing additional characteristics
+DCAT-AP+ closes this gap in a domain-agnostic way using patterns that can be reused by any domain for further specialization.
 
-To allow describing instances of the newly introduced classes with additional qualitative or quantitative attributes in 
-a very generic manner, we also introduced the [QuantitativeAttribute](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/) class (aligned with `qudt:Quantity`) and the 
-[QualititativeAttribute](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/QualitativeAttribute/) class 
-(aligned with `prov:Entity`).
+### Problems DCAT-AP+ addresses
 
-## Classification via domain-specific controlled vocabularies and ontologies
+The [SEMIC blog post on Application Profile modelling](https://interoperable-europe.ec.europa.eu/collection/semic-support-centre/application-profiles-what-are-they-and-how-model-and-reuse-them-properly-look-through-dcat-ap) identifies six problems with current DCAT-AP extension practices. DCAT-AP+ directly addresses three of them:
 
-With the [ClassifierMixin](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/ClassifierMixin/), 
-we provide two properties for semantic annotation to all DCAT-AP+ core classes:
+**Problem #2 — Inconsistent artefact generation.** Published data specification artefacts (HTML docs, SHACL shapes, RDF vocabulary, JSON Schema) are often generated by different tools or edited manually, leading to inconsistencies between them. DCAT-AP+ uses **LinkML as a single source of truth**: one YAML schema generates SHACL shapes, JSON Schema, Python/Pydantic data classes, and a HTML schema reference documentation. Hence, they are all guaranteed to be coherent.
 
-* [rdf_type](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/rdf_type/): Mapped to the RDF property 
-`rdf:type`, this allows an instance to be additionally typed with a class from an external ontology (e.g., classifying
-a DataGeneratingActivity instance with CHMO:0000595 for a ¹³C NMR measurement). An approach endorsed by the DCAT-AP
-developers [31]
-* [type](https://nfdi-de.github.io/dcat-ap-plus/latest/elements/classes/type/): Mapped to `dcterms:type`, this allows 
-for classification using a term from SKOS vocabularies or other controlled term sets without making such a strong 
-ontological commitment as with rdf_type.
+**Problem #5 — Disadvantages of generalisation.** The recommended approach for semantic adaptation in DCAT-AP extensions is to create subclasses or subproperties. But this can hinder adoption: if every domain creates its own `dcat:Dataset` subclass, interoperability requires reasoners or explicit multi-typing. DCAT-AP+ avoids subclass proliferation through its [`ClassifierMixin`](#pattern-3-flexible-classification-classifiermixin), which uses `rdf:type` and `dcterms:type` to classify instances with domain-specific ontology terms *without* introducing new OWL subclasses. This approach is [explicitly endorsed by the DCAT-AP developers](https://interoperable-europe.ec.europa.eu/collection/semic-support-centre/application-profiles-what-are-they-and-how-model-and-reuse-them-properly-look-through-dcat-ap).
 
-## On the naming and ontological alignment of DCAT-AP+ classes and slots
-The classes and slots defined within this LinkML model are not to be confused with the ontological classes and 
-properties to which they are aligned. DCAT-AP+ is, just like DCAT-AP, an application profile (aka graph shape) that
-specifies how certain ontologies and vocabularies are to be used/instantiated. So our DCAT-AP+ LinkML classes and slots 
-are to be interpreted just like SHACL node and property shapes. As such it is allowed to have 
-different classes (aka node shapes) or slots (aka property shapes) aligned to the same ontological term. 
+**Problem #6 — No entity profile mechanism.** There is no established way to define multiple usage profiles for the same entity. DCAT-AP+ addresses this through LinkML's class model, where [LinkML classes function as SHACL node shapes](#foundational-principle-linkml-classes-as-node-shapes), each with its own IRI, while referencing the same underlying ontology class.
 
+---
+
+## Foundational principle: LinkML classes as node shapes
+
+This is the single most important concept for understanding and extending DCAT-AP+.
+
+DCAT-AP+ is an **application profile** (a graph shape specification), not an ontology. Its LinkML classes and slots correspond to **SHACL node shapes and property shapes**, not to OWL classes and properties. The ontology terms they constrain are referenced via the LinkML metamodel slots `class_uri` and `slot_uri`.
+
+This means **multiple LinkML classes can map to the same ontology class**. Each represents a different *usage context* (node shape) for that ontology class.
+
+### Example from the schema
+
+Consider these three DCAT-AP+ classes:
+
+```yaml
+Entity:
+  class_uri: prov:Entity          # ← all three share
+  # generic: any entity used or produced by an activity
+
+EvaluatedEntity:
+  is_a: Entity
+  class_uri: prov:Entity          # ← the same ontology class
+  # narrower: the specific entity being evaluated
+
+AnalysisSourceData:
+  is_a: EvaluatedEntity
+  class_uri: prov:Entity          # ← still prov:Entity
+  # most specific: data produced by a prior activity, now being analysed
+```
+
+All three have `class_uri: prov:Entity`. In the generated SHACL, they become three distinct node shapes, each with different property constraints, that all target `prov:Entity`. This is exactly the "entity profile" mechanism the SEMIC blog post calls for: different profiles of the same entity, each with a unique identifier, without redefining the ontology term for that entity.
+
+### What this means for profile developers
+
+When you extend DCAT-AP+ for your domain (e.g. ChemDCAT-AP), you create new LinkML classes using `is_a` to inherit from DCAT-AP+ classes. Your new class may keep the parent's `class_uri` (if it's a more constrained usage of the same concept) or provide its own if it should map to a different ontology class.
+
+!!! warning "Changing `class_uri` affects PROV-O interoperability"
+    If you assign a different `class_uri`, your instances will no longer be typed as the parent's PROV-O class. SPARQL queries expecting e.g. `?x a prov:Agent` will miss them. This is fine if your domain ontology is aligned with PROV-O (as BFO-based ontologies are, via the [BFO → PROV-O mapping](https://doi.org/10.1038/s41597-025-04580-1)), because a reasoner can infer the PROV-O type. If your ontology is not aligned, consider whether losing PROV-O discoverability is acceptable for your use case. You can use `rdf_type` for multiple type assertions, see: [Pattern 3: Flexible classification (ClassifierMixin)](design-patterns.md#pattern-3-flexible-classification-classifiermixin)
+
+Either way, you are defining a **new node shape**, not a new OWL class.
+
+!!! warning "Don't confuse LinkML inheritance with OWL subclassing"
+    `is_a: EvaluatedEntity` in LinkML means "this new LinkML class inherits the slots of EvaluatedEntity." It does **not** generate an `rdfs:subClassOf` axiom. The ontological alignment is controlled solely by `class_uri` and `rdf_type`.
+
+For more on how to extend DCAT-AP+ see our [Rules for domain profiles](how-to-extend.md).
+
+---
+
+## Pattern 1: The provenance core (PROV-O alignment)
+
+### Motivation
+
+DCAT-AP already references PROV-O: `Dataset` has a `prov:wasGeneratedBy` property pointing to `Activity`, which is the node shape for the `prov:Activity` class. Yet, this node shape is an empty shell: it has no properties, no specified inputs, outputs, or agents. DCAT-AP+ fills this empty shell by reusing the [Starting Point Terms of PROV-O](https://www.w3.org/TR/prov-o/#description-starting-point-terms).
+
+The choice of PROV-O (rather than, say, the Sensor, Observation, Sample, and Actuator (SOSA) Ontology) was deliberate:
+
+1. DCAT-AP already commits to PROV-O — we extend, not replace.
+2. PROV-O's starting point terms are intentionally generic, matching our goal of domain-agnosticism.
+3. A formal [mapping between PROV-O and the Basic Formal Ontology (BFO)](https://doi.org/10.1038/s41597-025-04580-1) has been published, which validates alignment with OBO Foundry ontologies used by consortia like NFDI4Chem and NFDI4Cat.
+
+### The Activity pattern
+
+DCAT-AP+ extends the `Activity` class (aligned to `prov:Activity`) with slots for its inputs, outputs, and agents:
+
+```yaml
+Activity:
+  class_uri: prov:Activity
+  mixins:
+    - ClassifierMixin            # adds rdf_type + type slots
+  slots:
+    - id
+    - title
+    - description
+    - had_input_entity           # prov:used → Entity
+    - had_output_entity          # prov:generated → Entity
+    - had_input_activity         # prov:wasInformedBy → Activity
+    - carried_out_by             # prov:wasAssociatedWith → AgenticEntity
+    - has_qualitative_attribute  # dcterms:relation → QualitativeAttribute
+    - has_quantitative_attribute # dcterms:relation → QuantitativeAttribute
+    - has_part                   # dcterms:hasPart → Activity
+    - part_of                    # dcterms:isPartOf → Activity
+```
+
+The slot-to-predicate mappings (shown as comments) are defined via `slot_uri` in the schema. They reuse established vocabulary terms verbatim — DCAT-AP+ does not mint new RDF properties where existing ones suffice.
+
+### AgenticEntity: why agents, not entities
+
+DCAT-AP+ introduces `AgenticEntity` (aligned to `prov:Agent`) as the range of `carried_out_by`. In PROV-O, an *agent* is something that bears responsibility for an activity. It *influences* the activity taking place. This fits instruments and software: a spectrometer doesn't just *exist* during a measurement, it *causes* the measurement to happen.
+
+`AgenticEntity` has two concrete subclasses:
+
+```yaml
+Device:
+  is_a: AgenticEntity
+  class_uri: prov:Agent              # SHACL target = prov:Agent
+  # exact_mappings: OBI:0000968, epos:Equipment, NCIT:C62103, SIO:000956, AFE:0000354
+  # A physical instrument (spectrometer, reactor, sensor, ...)
+
+Software:
+  is_a: AgenticEntity
+  class_uri: prov:SoftwareAgent      # SHACL target = prov:SoftwareAgent
+  # exact_mappings: schema:SoftwareApplication
+  # A software tool (analysis script, simulation code, ...)
+```
+
+!!! note "Why not `foaf:Agent`?"
+    DCAT-AP already uses `foaf:Agent` for people and organisations responsible for a dataset's *publication*. `AgenticEntity` (mapped to `prov:Agent`) serves a different purpose: it describes what was involved in the dataset's *generation*. Renaming avoids confusion between the two distinct roles.
+
+### DataGeneratingActivity: the specialization for data production
+
+Since DCAT-AP+ specifically concerns how datasets are generated, it introduces `DataGeneratingActivity` as a subclass of `Activity`:
+
+```yaml
+DataGeneratingActivity:
+  is_a: Activity
+  class_uri: prov:Activity
+  slots:
+    - evaluated_entity    # what was measured/observed
+    - evaluated_activity  # what process was studied
+    - realized_plan       # what procedure was followed
+    - occurred_in         # where it took place
+```
+
+The key new slots, `evaluated_entity` and `evaluated_activity`, are **sub-slots** of the inherited `had_input_entity` and `had_input_activity`:
+
+```yaml
+evaluated_entity:
+  is_a: had_input_entity       # ← LinkML slot inheritance
+  slot_uri: prov:used          # ← same RDF predicate as parent
+  range: EvaluatedEntity       # ← narrower range than parent (Entity)
+```
+
+This slot inheritance is how DCAT-AP+ implements the DCAT-AP extension guideline that "properties may be added, but must not duplicate existing ones" because `evaluated_entity` *is* `had_input_entity`, just with a narrower range and a more specific semantic intent.
+
+### Dual linking: Dataset ↔ subject matter
+
+DCAT-AP+ links the subject matter to *both* the `Dataset` and the `DataGeneratingActivity`:
+
+![dataset_activity_subject_matter_dark.svg](images/dataset_activity_subject_matter_dark.svg#only-dark)
+![dataset_activity_subject_matter_light.svg](images/dataset_activity_subject_matter_light.svg#only-light)
+
+This intentional redundancy supports two query patterns:
+
+- **Dataset-centric**: "Find all datasets about substance X" → query `is_about_entity`
+- **Process-centric**: "Find all activities that evaluated substance X" → query `evaluated_entity`
+
+Both `is_about_entity` and `is_about_activity` are mapped to `dcterms:subject` (with `exact_mappings` to `IAO:0000136` — "is about" from the Information Artifact Ontology).
+
+### The DataAnalysis chain
+
+Research data is often produced in multi-step pipelines: an instrument generates raw data, then software analyses that raw data to produce derived results. DCAT-AP+ models this with three additional classes:
+
+![analysis_context_light.svg](images/analysis_context_light.svg#only-light)
+![analysis_context_dark.svg](images/analysis_context_dark.svg#only-dark)
+
+Concrete example: An NMR spectrometer produces a raw FID (Free Induction Decay) dataset. Software then performs a Fourier transform and peak assignment on that raw data, producing a structural assignment dataset. The `AnalysisSourceData` node links the two, preserving the full provenance chain.
+
+Note that all three — `DataAnalysis`, `AnalysisDataset`, and `AnalysisSourceData` — share `class_uri` values with their parents (`prov:Activity`, `dcat:Dataset`, `prov:Entity` respectively). They are different node shapes, not new ontology classes. See [Foundational Principle](#foundational-principle-linkml-classes-as-node-shapes).
+
+---
+
+## Pattern 2: Generic attribute description
+
+### Motivation
+
+Domain-specific metadata often involves quantitative or qualitative properties attached to entities, activities, or instruments — a temperature, a concentration, a solvent name, a calibration standard. In plain DCAT-AP, the only option is to encode these as free text in `dcterms:description`. DCAT-AP+ provides a structured alternative.
+
+### QuantitativeAttribute
+
+Aligned to `qudt:Quantity`, this class represents a measurable property with a numeric value, a quantity kind, and a unit:
+
+```yaml
+QuantitativeAttribute:
+  class_uri: qudt:Quantity
+  mixins:
+    - ClassifierMixin
+  slots:
+    - title
+    - description
+    - value                # prov:value, range: float, required
+  attributes:
+    has_quantity_type:      # qudt:hasQuantityKind → DefinedTerm, required
+    unit:                  # qudt:unit → DefinedTerm, recommended
+```
+
+The `has_quantity_type` and `unit` attributes use [LinkML enum bindings](https://linkml.io/linkml/schemas/enums.html) to constrain their values to QUDT's QuantityKind and Unit vocabularies respectively.
+
+!!! warning "Experimental feature"
+    LinkML's enum binding feature is declared in the schema but may not yet be fully supported by the `linkml-runtime` validation tooling. The bindings express the *intent* that values should come from QUDT vocabularies and will be enforced once the feature matures. In the meantime, validation of these constraints may require additional checks outside of `linkml-validate`.
+
+#### Worked example: describing a measurement temperature
+
+Suppose an NMR measurement was performed at 298 K. In DCAT-AP+ instance data:
+
+```yaml
+# Inside a DataGeneratingActivity or EvaluatedEntity:
+has_quantitative_attribute:
+  - value: 298.0
+    has_quantity_type:
+      id: http://qudt.org/vocab/quantitykind/Temperature
+      title: "Temperature"
+    unit:
+      id: http://qudt.org/vocab/unit/K
+      title: "Kelvin"
+```
+
+Compare this to what you would write in plain DCAT-AP:
+
+```yaml
+# DCAT-AP: free text only
+description: "Measurement performed at 298 K"
+```
+
+The DCAT-AP version is not queryable, not validatable, and not interoperable. The DCAT-AP+ version enables SPARQL queries like "find all datasets where the measurement temperature was between 290 and 310 K".
+
+### QualitativeAttribute
+
+Aligned to `prov:Entity`, this class represents a non-numeric property — a string value that should be further classified using the `ClassifierMixin`:
+
+```yaml
+QualitativeAttribute:
+  class_uri: prov:Entity
+  mixins:
+    - ClassifierMixin
+  slots:
+    - title
+    - description
+    - value                # prov:value, range: string, required
+```
+
+#### Worked example: describing a spectrometer setting
+
+An NMR spectrometer uses a specific pulse program. This is a qualitative property of the instrument (or the activity), classified with an ontology term:
+
+```yaml
+# Inside a Device (e.g. an NMR spectrometer) or DataGeneratingActivity:
+has_qualitative_attribute:
+  - value: zgpg30
+    title: Puls program
+    rdf_type:
+      id: NMR:1400037
+      title: NMR pulse sequence
+```
+
+The `value` slot carries the human-readable string; `rdf_type` provides the machine-actionable classification via the NMR ontology. The `title` slot acts as a human-friendly label for the attribute itself.
+
+#### Worked example: describing an assigned chemical identifier
+
+When an NMR spectrum is analysed and a chemical structure is assigned, the resulting InChIKey is a qualitative attribute of the evaluated substance sample:
+
+```yaml
+# Inside an EvaluatedEntity (e.g. a SubstanceSample in ChemDCAT-AP):
+has_qualitative_attribute:
+  - value: KVOIVNBYNQXCNY-BOCHJOTCSA-N
+    title: assigned InChiKey
+    rdf_type:
+      id: CHEMINF:000059
+      title: InChiKey
+```
+
+This pattern lets you attach *any* qualitative property to *any* DCAT-AP+ entity without modifying the schema — you only need to know the right ontology term for classification via `rdf_type`.
+
+!!! tip "When to use QualitativeAttribute vs. a domain profile sub-property"
+    `QualitativeAttribute` is the **generic fallback**. If your domain profile (e.g. ChemDCAT-AP) defines a dedicated property like `smiles` or `inchikey`, use that instead — it is more explicit, easier to validate, and produces more concise instance data. Use `QualitativeAttribute` when no dedicated property exists.
+
+### Where attributes can be attached
+
+Both `has_quantitative_attribute` and `has_qualitative_attribute` (mapped to `dcterms:relation`) are available on:
+
+- `Entity` (and all subclasses: `EvaluatedEntity`, `AnalysisSourceData`)
+- `Activity` (and all subclasses: `DataGeneratingActivity`, `EvaluatedActivity`, `DataAnalysis`)
+- `AgenticEntity` (and all subclasses: `Device`, `Software`)
+
+This means you can describe properties of the thing being measured, the measurement process itself, or the instrument — all with the same pattern.
+
+---
+
+## Pattern 3: Flexible classification (ClassifierMixin)
+
+### The mechanism
+
+`ClassifierMixin` is an abstract mixin that injects two classification slots into every DCAT-AP+ core class:
+
+```yaml
+ClassifierMixin:
+  abstract: true
+  mixin: true
+  slots:
+    - type       # dcterms:type → DefinedTerm
+    - rdf_type   # rdf:type → DefinedTerm
+```
+
+Because it is a mixin, it does not generate its own node shape. Its slots are "mixed into" every class that declares `mixins: [ClassifierMixin]`: `Activity`, `Entity`, `AgenticEntity`, `Plan`, `Surrounding`, `QualitativeAttribute`, `QuantitativeAttribute`, and all their subclasses.
+
+### `rdf_type` vs. `type`: when to use which
+
+These two slots serve fundamentally different purposes:
+
+| | `rdf_type` | `type` |
+|---|---|---|
+| **Mapped to** | `rdf:type` | `dcterms:type` |
+| **Semantic commitment** | **Ontological assertion** — the instance *is* an instance of the referenced class | **Cataloging assertion** — the instance *is categorized as* the referenced concept |
+| **Range expectation** | An OWL/RDFS class from a formal ontology | A SKOS concept or term from a controlled vocabulary |
+| **Reasoner behaviour** | OWL reasoners will infer class membership and apply class axioms | No inference; treated as a simple annotation |
+| **Use when** | You want the full semantic weight of formal ontology typing (e.g., classifying a `DataGeneratingActivity` as `CHMO:0000595` so that reasoners know it is an NMR measurement) | You want lightweight tagging without committing to an ontology's full logical structure (e.g., tagging a dataset with a SKOS concept from a local taxonomy) |
+
+#### Do: classify a measurement with an ontology class
+
+```yaml
+# DataGeneratingActivity instance
+rdf_type:
+  id: CHMO:0000595                  # from the Chemical Methods Ontology
+  title: "carbon-13 nuclear magnetic resonance spectroscopy"
+```
+
+This asserts that the activity instance is *of type* `CHMO:0000595`. A SPARQL query for `?x a CHMO:0000595` will find it. An OWL reasoner can infer that it is also a `CHMO:0000293` (NMR spectroscopy) via the ontology's class hierarchy.
+
+#### Do: tag with a SKOS concept
+
+```yaml
+# DataGeneratingActivity instance
+type:
+  id: http://example.org/vocab/spectroscopy
+  title: "Spectroscopy"
+  from_CV: http://example.org/vocab/method-types
+```
+
+This says the activity *is categorized as* "Spectroscopy" in a local vocabulary. No ontological inference follows.
+
+#### Don't: use `rdf_type` for loose tagging
+
+If you don't intend the full ontological implications, use `type`. Misusing `rdf_type` with SKOS concepts can produce unintended reasoning results when the data is combined with ontology axioms.
+
+#### Don't: use `type` when you need precision
+
+If downstream consumers need to query by specific ontology classes (e.g. "find all ¹³C NMR measurements"), `type` with a vague label won't help. Use `rdf_type` with the precise ontology term.
+
+### SEMIC endorsement
+
+This approach — allowing instances to carry additional `rdf:type` assertions pointing to domain ontology classes — is explicitly discussed and endorsed in the [SEMIC Application Profiles blog post](https://interoperable-europe.ec.europa.eu/collection/semic-support-centre/application-profiles-what-are-they-and-how-model-and-reuse-them-properly-look-through-dcat-ap), which presents the dual assertion of multiple `rdf:type` values as a pragmatic alternative to subclass proliferation.
+
+---
+
+## Pattern 4: Contextual metadata (Plan and Surrounding)
+
+DCAT-AP+ provides two sparsely specified classes for optional context:
+
+### Plan
+
+Aligned to `prov:Plan` (aliases: Plan Specification, Method, Procedure). Represents the directive information that prescribes how an activity should be carried out — a protocol, a standard operating procedure, a measurement method.
+
+```yaml
+Plan:
+  class_uri: prov:Plan
+  mixins:
+    - ClassifierMixin      # → rdf_type can point to e.g. a specific SOP type
+  slots:
+    - title
+    - description
+```
+
+Linked from `DataGeneratingActivity` via `realized_plan` (mapped to `prov:used`).
+
+`Plan` is intentionally minimal in DCAT-AP+. Domain profiles can extend it with specific properties (e.g. protocol version, parameters). At the DCAT-AP+ level, `title` and `description` carry the human-readable information, while `rdf_type` or `type` provide machine-actionable classification.
+
+### Surrounding
+
+Aligned to `prov:Location`. Represents the spatial context of an activity — a laboratory, a field site, a clean room, a computational cluster.
+
+```yaml
+Surrounding:
+  class_uri: prov:Location
+  mixins:
+    - ClassifierMixin
+  slots:
+    - title
+    - description
+```
+
+Linked from `DataGeneratingActivity` via `occurred_in` (mapped to `prov:atLocation`).
+
+!!! note "Surrounding vs. DCAT-AP's `dcterms:spatial`"
+    DCAT-AP's `geographical_coverage` (mapped to `dcterms:spatial`) describes *where the dataset applies* (e.g. geographic extent of a climate dataset). `Surrounding` describes *where the data generation took place*. These are different questions and can coexist on the same dataset.
+
+---
+
+## Summary: The DCAT-AP+ UML overview
+
+The following UML class diagram shows the complete DCAT-AP+ extension layer (red highlighting). The classes and slots represent the LinkML schema elements, corresponding to SHACL node and property shapes. For brevity, slots inside the UML classes are referenced via their `sh:path` value rather than their LinkML slot name.
+
+![DCAT-AP-PLUS UML-diagram](../images/DCAT-AP-PLUS_UML_only_dark.svg#only-dark)
+![DCAT-AP-PLUS UML-diagram](../images/DCAT-AP-PLUS_UML_only_light.svg#only-light)
+
+Reading guide:
+
+- **Dataset** (top left) is the entry point. It *must* link to a `DataGeneratingActivity` via `prov:wasGeneratedBy` and *should* link to `EvaluatedEntity` / `EvaluatedActivity` via `dcterms:subject`.
+- **DataGeneratingActivity** (centre) links to its inputs (`evaluated_entity`, `evaluated_activity`), its agents (`carried_out_by` → `AgenticEntity`), an optional `Plan`, and an optional `Surrounding`.
+- **QuantitativeAttribute** and **QualitativeAttribute** (right) can be attached to entities, activities, and agents via `dcterms:relation`.
+- **All green classes** include `rdf_type` (`rdf:type`) and `type` (`dcterms:type`) from the `ClassifierMixin`.

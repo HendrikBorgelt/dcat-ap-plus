@@ -7,8 +7,8 @@ theme:
   name: material
   # logo-customization: https://github.com/squidfunk/mkdocs-material/discussions/2729
   custom_dir: docs/overrides
-  logo_dark_mode: 'images/logo-icon.svg'
-  logo_light_mode: 'images/logo-icon.svg'
+  logo_dark_mode: 'images/DCAT-AP-PLUS-Logo.svg'
+  logo_light_mode: 'images/DCAT-AP-PLUS-Logo.svg'
 
   # Toggling between default/light/dark color schemes
   # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/
@@ -46,7 +46,7 @@ theme:
     - navigation.instant.progress
     - navigation.tracking
 
-  favicon: 'images/favicon.svg'
+  favicon: 'images/DCAT-AP-PLUS-Logo.svg'
 
 # for adding extra css/js see https://www.mkdocs.org/user-guide/customizing-your-theme/
 extra_css:
@@ -78,6 +78,7 @@ watch:
 nav:
   - Home: index.md
   - Design Patterns: design-patterns.md
+  - Extending Rules: how-to-extend.md
   - Automatic Generation: automatic-generation.md
   - Schema: elements/overview.md
   - Versioning: versioning.md
@@ -102,6 +103,8 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:mermaid2.fence_mermaid_custom
+  - pymdownx.tasklist:
+      custom_checkbox: true
 exclude_docs: |
   /templates-linkml/
 
