@@ -1,4 +1,4 @@
-# DCAT-AP+: Providing Links to Use-case Specific Context
+# DCAT-AP Plus Links to Use-case Specific Context (DCAT-AP+)
 
 DCAT-AP+ is a [LinkML](https://linkml.io/)-based extension of the [DCAT Application Profile 3.0](https://semiceu.github.io/DCAT-AP/releases/3.0.0/) that adds a **provenance layer** for describing *how* a dataset was generated and *what* it is about — using the [Starting Point Terms of PROV-O](https://www.w3.org/TR/prov-o/#description-starting-point-terms), the [QUDT ontology](https://www.qudt.org/), and [Dublin Core Terms](http://purl.org/dc/terms/).
 
