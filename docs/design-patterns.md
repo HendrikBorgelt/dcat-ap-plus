@@ -132,7 +132,7 @@ Software:
 ```
 
 !!! note "Why not `foaf:Agent`?"
-    DCAT-AP already uses `foaf:Agent` for people and organisations responsible for a dataset's *publication*. `AgenticEntity` (mapped to `prov:Agent`) serves a different purpose: it describes what was involved in the dataset's *generation*. Renaming avoids confusion between the two distinct roles.
+    DCAT-AP already uses `foaf:Agent` for people and organisations responsible for a dataset's *publication*. `AgenticEntity` (mapped to `prov:Agent`) serves a different purpose: it describes what was involved in the dataset's *generation*. Also, it is part of the core PROV-O activity pattern and should thus be reused. We renamed it to avoid confusion between these two distinct roles.
 
 ### DataGeneratingActivity: the specialization for data production
 
