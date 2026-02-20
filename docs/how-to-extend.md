@@ -1,4 +1,4 @@
-# Extending DCAT-AP+: Rules for domain profiles
+# Rules for extending DCAT-AP+ in domain-specific profiles
 
 DCAT-AP+ is designed to be imported and specialized. [ChemDCAT-AP](https://github.com/nfdi-de/chem-dcat-ap) demonstrates this for chemistry and catalysis. This section documents the contract between DCAT-AP+ and its downstream profiles.
 
