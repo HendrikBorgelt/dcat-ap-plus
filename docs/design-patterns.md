@@ -91,10 +91,10 @@ When you create a domain profile, you define **new shapes**, not new ontology te
 The same applies to `slot_uri` on sub-slots: keep the parent's predicate for interoperability, or replace it with a semantically richer domain predicate where the generic default is insufficient.
 
 !!! warning "Don't confuse LinkML inheritance with OWL subclassing"
-    `is_a: EvaluatedEntity` in LinkML means "this LinkML class inherits the slots of EvaluatedEntity." It does **not** generate an `rdfs:subClassOf` axiom. The ontological alignment is controlled solely by `class_uri`. Likewise, a sub-slot does not generate `rdfs:subPropertyOf`. It inherits the parent's structural constraints, not its RDF predicate (unless `slot_uri` is left unchanged).
+    `is_a: EvaluatedEntity` in LinkML means "this LinkML class inherits the slots of EvaluatedEntity." It does **not** generate an `rdfs:subClassOf` axiom. The ontological alignment is controlled solely by `class_uri`. Likewise, a sub-slot does not generate `rdfs:subPropertyOf`. It inherits the parent's structural constraints, not its RDF predicate (the same `slot_uri` value must be set manually for this).
 
 !!! warning "Blank node duplication when projecting between vocabularies"
-    If a knowledge graph generates RDF from the same instance data against both the DCAT-AP+ and a domain-specific schema, any inlined node without an `id` (i.e. a blank node) will be created twice, once per schema, with different predicates connecting it to its parent:
+    If a knowledge graph generates RDF from the same instance data against both the DCAT-AP+ and a domain-specific schema, any inlined node without an `id` (i.e. a blank node) will be created twice, once per schema, with different predicates connecting it to its subject:
 
     ```turtle
     # From DCAT-AP+ schema
