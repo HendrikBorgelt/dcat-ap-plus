@@ -23,7 +23,7 @@ DCAT-AP+ is designed to be imported and specialized. [ChemDCAT-AP](https://githu
 ## What you MUST NOT do
 
 - **Don't broaden cardinality** on inherited slots (e.g. don't make a `required` slot optional).
-- **Don't change `slot_uri` or `class_uri`** of DCAT-AP+ elements — that would break the RDF mapping.
+- **Don't change `slot_uri` or `class_uri` on inherited DCAT-AP+ elements** — modifying the base schema's ontology mappings would break the RDF mapping for all profiles. You **may** assign different `class_uri` or `slot_uri` values on your own subclasses and sub-slots. See [Foundational principle: LinkML elements as SHACL shapes](design-patterns.md#foundational-principle-linkml-elements-as-shacl-shapes) for guidance.
 - **Don't add domain-specific classes directly to DCAT-AP+**. Create your own schema that imports it.
 - **Don't duplicate existing DCAT-AP classes or properties** — add new ones or specialize existing ones.
 
