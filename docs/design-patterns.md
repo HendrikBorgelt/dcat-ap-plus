@@ -254,11 +254,11 @@ Note that all three — `DataAnalysis`, `AnalysisDataset`, and `AnalysisSourceDa
 
 ### Motivation
 
-Domain-specific metadata often involves quantitative or qualitative properties attached to entities, activities, or instruments — a temperature, a concentration, a solvent name, a calibration standard. In plain DCAT-AP, the only option is to encode these as free text in `dcterms:description`. DCAT-AP+ provides a structured alternative.
+Domain-specific metadata often involves quantitative or qualitative properties attached to entities, activities, or instruments, i.e. a temperature, a concentration, a solvent name, a calibration standard. In plain DCAT-AP, the only option is to encode these as free text in `dcterms:description`. DCAT-AP+ provides a structured alternative.
 
 ### QuantitativeAttribute
 
-Aligned to `qudt:Quantity`, this class represents a measurable property with a numeric value, a quantity kind, and a unit:
+Aligned to `qudt:Quantity`, this class represents a quantifiable property with a numeric value, a quantity kind, and a unit:
 
 ```yaml
 QuantitativeAttribute:
@@ -274,10 +274,10 @@ QuantitativeAttribute:
     unit:                  # qudt:unit → DefinedTerm, recommended
 ```
 
-The `has_quantity_type` and `unit` attributes use [LinkML enum bindings](https://linkml.io/linkml/schemas/enums.html) to constrain their values to QUDT's QuantityKind and Unit vocabularies respectively.
+The `has_quantity_type` and `unit` attributes use [LinkML enum bindings](https://linkml.io/linkml/schemas/enums.html) to constrain their values to QUDT's [QuantityKind](http://qudt.org/vocab/quantitykind/) and [Unit](http://qudt.org/vocab/unit/) vocabularies respectively.
 
 !!! warning "Experimental feature"
-    LinkML's enum binding feature is declared in the schema but may not yet be fully supported by the `linkml-runtime` validation tooling. The bindings express the *intent* that values should come from QUDT vocabularies and will be enforced once the feature matures. In the meantime, validation of these constraints may require additional checks outside of `linkml-validate`.
+    LinkML's enum binding feature is declared in the schema but may not yet be fully supported by the `linkml-runtime` validation tooling. The bindings express the *intent* that values should come from QUDT vocabularies () and will be enforced once the feature matures. In the meantime, validation of these constraints may require additional checks outside of `linkml-validate`.
 
 #### Design rationale: why a single-node pattern
 
@@ -285,19 +285,23 @@ The `has_quantity_type` and `unit` attributes use [LinkML enum bindings](https:/
 
 DCAT-AP+'s single-node pattern, `value` + `quantity kind` + `unit`, matches [QUDT](https://www.qudt.org/)'s `Quantity` model, which is an established standard for quantity representation in engineering, industrial, and web-of-data contexts. It is immediately understandable, directly queryable (one hop from entity to value), and sufficient for the structured discovery that DCAT-AP+ enables over plain DCAT-AP's free-text descriptions.
 
-The classification slots from the [ClassifierMixin](#pattern-3-flexible-classification-classifiermixin) provide an extension point: domain profiles can use `rdf_type` to classify an attribute more precisely (e.g. as a measured value vs. a specified parameter) without changing the structural pattern.
+The classification slots from the [ClassifierMixin](#pattern-3-flexible-classification-classifiermixin) provide an extension point: domain-specific profiles can use `rdf_type` to classify an attribute more precisely (e.g. as a measured value vs. a specified parameter) without changing the structural pattern.
 
 !!! note "Alignment with richer measurement models"
     Domain profiles that need the full expressivity of ontological measurement models (e.g. for reasoning over quality–datum–value chains) can subclass `QuantitativeAttribute` to add the necessary structure. The base pattern is intentionally minimal to remain accessible across research domains, from chemistry to digital humanities, where data producers have widely varying familiarity with formal ontology.
 
 #### Worked example: describing a measurement temperature
 
-Suppose an NMR measurement was performed at 298 K. In DCAT-AP+ instance data:
+Suppose an NMR measurement was performed at 298.0 K. In DCAT-AP+ instance data:
 
 ```yaml
 # Inside a DataGeneratingActivity or EvaluatedEntity:
 has_quantitative_attribute:
-  - value: 298.0
+  - title: "sample temperature setting"
+    rdf_type:
+      id: NMR:1400262
+      title: "sample temperature information"  
+    value: 298.0
     has_quantity_type:
       id: http://qudt.org/vocab/quantitykind/Temperature
       title: "Temperature"
@@ -313,11 +317,11 @@ Compare this to what you would write in plain DCAT-AP:
 description: "Measurement performed at 298 K"
 ```
 
-The DCAT-AP version is not queryable, not validatable, and not interoperable. The DCAT-AP+ version enables SPARQL queries like "find all datasets where the measurement temperature was between 290 and 310 K".
+The DCAT-AP version is not easily queryable, validatable, nor really interoperable. The DCAT-AP+ version enables SPARQL queries like "find all datasets where the measurement temperature was between 290 and 310 K".
 
 ### QualitativeAttribute
 
-Aligned to `prov:Entity`, this class represents a non-numeric property — a string value that should be further classified using the `ClassifierMixin`:
+Aligned to `prov:Entity`, this class represents a **recorded non-numeric characterization** of an entity, activity, or agent. Like `QuantitativeAttribute`, it captures what a researcher noted down, not the inherent property itself. The `value` slot carries the string representation; the `ClassifierMixin` provides ontology-grounded classification or vocabulary bound categorization of what that string describes:
 
 ```yaml
 QualitativeAttribute:
@@ -332,19 +336,19 @@ QualitativeAttribute:
 
 #### Worked example: describing a spectrometer setting
 
-An NMR spectrometer uses a specific pulse program. This is a qualitative property of the instrument (or the activity), classified with an ontology term:
+An NMR spectrometer uses a specific pulse program. Recording this setting as a qualitative attribute makes it discoverable and classifiable via an ontology term:
 
 ```yaml
 # Inside a Device (e.g. an NMR spectrometer) or DataGeneratingActivity:
 has_qualitative_attribute:
   - value: zgpg30
-    title: Puls program
+    title: used pulse program setting
     rdf_type:
       id: NMR:1400037
       title: NMR pulse sequence
 ```
 
-The `value` slot carries the human-readable string; `rdf_type` provides the machine-actionable classification via the NMR ontology. The `title` slot acts as a human-friendly label for the attribute itself.
+The `value` slot represents a specific pulse program code of a Bruker NMR spectrometer; `rdf_type` provides the machine-actionable classification via the NMR ontology, and the `title` slots act as human-readable labels for this attribute.
 
 #### Worked example: describing an assigned chemical identifier
 
@@ -359,8 +363,7 @@ has_qualitative_attribute:
       id: CHEMINF:000059
       title: InChiKey
 ```
-
-This pattern lets you attach *any* qualitative property to *any* DCAT-AP+ entity without modifying the schema. You only need to know the right ontology term for classification via `rdf_type`, or the right controlled vocabulary term for tagging via `type`.
+This pattern lets you record *any* non-numeric characterization on *any* DCAT-AP+ entity without modifying the schema. You only need the right ontology term for classification via `rdf_type`, or the right controlled vocabulary term for tagging via `type`.
 
 !!! tip "When to use QualitativeAttribute vs. a domain profile sub-property"
     `QualitativeAttribute` is the **generic fallback**. If your domain profile (e.g. ChemDCAT-AP) defines a dedicated property like `smiles` or `inchikey`, use that instead. It is more explicit, easier to validate, and produces more concise instance data. Use `QualitativeAttribute` when no dedicated property exists.
