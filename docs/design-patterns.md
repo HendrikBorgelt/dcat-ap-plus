@@ -118,11 +118,36 @@ For more on how to extend DCAT-AP+ see our [Rules for domain profiles](how-to-ex
 
 DCAT-AP already references PROV-O: `Dataset` has a `prov:wasGeneratedBy` property pointing to `Activity`, which is the node shape for the `prov:Activity` class. Yet, this node shape is an empty shell: it has no properties, no specified inputs, outputs, or agents. DCAT-AP+ fills this empty shell by reusing the [Starting Point Terms of PROV-O](https://www.w3.org/TR/prov-o/#description-starting-point-terms).
 
-The choice of PROV-O (rather than, say, the Sensor, Observation, Sample, and Actuator (SOSA) Ontology) was deliberate:
+The choice of PROV-O (rather than alternative provenance or observation models) was deliberate:
 
-1. DCAT-AP already commits to PROV-O — we extend, not replace.
-2. PROV-O's starting point terms are intentionally generic, matching our goal of domain-agnosticism.
-3. A formal [mapping between PROV-O and the Basic Formal Ontology (BFO)](https://doi.org/10.1038/s41597-025-04580-1) has been published, which validates alignment with OBO Foundry ontologies used by consortia like NFDI4Chem and NFDI4Cat.
+1. **DCAT-AP already commits to PROV-O** — we extend, not replace. Adding a second provenance vocabulary would create redundancy and force users to navigate two parallel models.
+2. **PROV-O's starting point terms are intentionally generic**, matching our goal of domain-agnosticism.
+3. **A formal [mapping between PROV-O and the Basic Formal Ontology (BFO)](https://doi.org/10.1038/s41597-025-04580-1) has been published**, which validates alignment with OBO Foundry ontologies used by consortia like NFDI4Chem and NFDI4Cat.
+
+### Why not SOSA, P-Plan, or ProvONE?
+
+Several alternative models were considered during the design of DCAT-AP+:
+
+- The [Sensor, Observation, Sample, and Actuator (SOSA)](https://www.w3.org/TR/vocab-ssn/) ontology models the **observation pattern**: a `Sensor` makes an `Observation` of an `ObservedProperty` on a `FeatureOfInterest`, following a `Procedure`. This is well-suited for sensor networks and hard-science measurements.
+- [P-Plan](http://vocab.linkeddata.es/p-plan/index.html) extends PROV-O with explicit plan/step structures for describing **experimental workflows**: a `Plan` has `Steps`, each `Step` has input/output `Variables`.
+- [ProvONE](https://purl.dataone.org/provone-v1-dev) extends PROV-O for **computational workflows**, adding `Program`, `Port`, and `Channel` classes for data pipeline provenance.
+
+All three are more expressive than PROV-O for their respective domains. However, they share a commitment to the **hard-science observation or computational workflow paradigm** that makes them too narrow for DCAT-AP+'s intended scope.
+
+DCAT-AP+ must accommodate data-generating activities across all research domains, including:
+
+- **Natural sciences**: NMR spectroscopy, chemical synthesis, sensor measurements — where SOSA's observation pattern fits well
+- **Humanities**: literature analysis, corpus annotation, archival research — where there is no "sensor", no "observed property", and the activity does not follow a repeatable "procedure" in the SOSA sense
+- **Social sciences**: surveys, interviews, ethnographic fieldwork — where data generation involves human participants, not instruments
+- **Computational science**: simulations, data transformations, model training — where ProvONE's workflow model fits but SOSA's sensor model does not
+
+A literature analysis that produces a dataset is a `prov:Activity` that `prov:generated` a `dcat:Dataset`. It is not a SOSA `Observation` of an `ObservedProperty`. A humanities researcher should not be forced into an observation-centric vocabulary to describe their data provenance.
+
+PROV-O's generality is a feature in this context: its starting point terms (`Activity`, `Entity`, `Agent`, `used`, `wasGeneratedBy`, `wasAssociatedWith`) are abstract enough to describe any data-producing process without imposing domain-specific assumptions. Domain profiles can then add precision where needed — ChemDCAT-AP adds chemical reaction roles, an NMR profile adds spectroscopy-specific constraints — without the base layer excluding entire research disciplines.
+
+!!! note "Domain profiles can still reference SOSA or P-Plan"
+    Nothing prevents a domain profile from adding `exact_mappings` or `close_mappings` to SOSA or P-Plan terms on its classes. For example, a sensor-network profile could map `DataGeneratingActivity` → `sosa:Observation` and `Device` → `sosa:Sensor`. The PROV-O base layer does not preclude this — it simply does not require it.
+
 
 ### The Activity pattern
 
