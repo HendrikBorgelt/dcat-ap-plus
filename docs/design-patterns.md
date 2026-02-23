@@ -360,10 +360,14 @@ has_qualitative_attribute:
       title: InChiKey
 ```
 
-This pattern lets you attach *any* qualitative property to *any* DCAT-AP+ entity without modifying the schema — you only need to know the right ontology term for classification via `rdf_type`.
+This pattern lets you attach *any* qualitative property to *any* DCAT-AP+ entity without modifying the schema. You only need to know the right ontology term for classification via `rdf_type`, or the right controlled vocabulary term for tagging via `type`.
 
 !!! tip "When to use QualitativeAttribute vs. a domain profile sub-property"
-    `QualitativeAttribute` is the **generic fallback**. If your domain profile (e.g. ChemDCAT-AP) defines a dedicated property like `smiles` or `inchikey`, use that instead — it is more explicit, easier to validate, and produces more concise instance data. Use `QualitativeAttribute` when no dedicated property exists.
+    `QualitativeAttribute` is the **generic fallback**. If your domain profile (e.g. ChemDCAT-AP) defines a dedicated property like `smiles` or `inchikey`, use that instead. It is more explicit, easier to validate, and produces more concise instance data. Use `QualitativeAttribute` when no dedicated property exists.
+
+!!! note "Domain profiles may override `slot_uri` on attribute sub-slots"
+    When a domain profile creates a sub-slot of `has_quantitative_attribute` or `has_qualitative_attribute` (e.g. ChemDCAT-AP's `inchikey` or `has_temperature`), it may assign a more specific `slot_uri` than the parent's `dcterms:relation`. For example, ChemDCAT-AP uses `SIO:000008` (has attribute) for its chemistry-specific attribute sub-slots. This is a valid specialization. The sub-slot inherits the structural pattern but maps to a semantically richer predicate in the generated RDF. See [`slot_uri` replacement in sub-slots](#slot_uri-replacement-in-sub-slots)
+    for the interoperability implications.
 
 ### Where attributes can be attached
 
