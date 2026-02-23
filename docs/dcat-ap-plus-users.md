@@ -30,7 +30,7 @@ We are collecting dataset examples from [NOMAD](https://nomad-lab.eu/), a materi
 
 ### NFDIcore alignment
 
-We are collaborating with the developers of the [NFDIcore ontology](https://nfdi.fiz-karlsruhe.de/ontology/) to explore mapping DCAT-AP+ schema elements to NFDIcore classes and predicates in addition to PROV-O, DCTerms and QUDT. NFDIcore is a BFO-aligned ontology that provides narrower, more precisely scoped terms that match the intent of several DCAT-AP+ node shapes. Because DCAT-AP+ uses LinkML's `class_uri` and `slot_uri` for ontology alignment (see [Design Patterns: foundational principle](design-patterns.md#foundational-principle-linkml-classes-as-node-shapes)), swapping or supplementing the underlying ontology mappings does not require restructuring the schema.
+We are collaborating with the developers of the [NFDIcore ontology](https://nfdi.fiz-karlsruhe.de/ontology/) to explore mapping DCAT-AP+ schema elements to NFDIcore classes and predicates in addition to PROV-O, DCTerms and QUDT. NFDIcore is a BFO-aligned ontology that provides narrower, more precisely scoped terms that match the intent of several DCAT-AP+ node shapes. Because DCAT-AP+ uses LinkML's `class_uri` and `slot_uri` for ontology alignment (see [Design Patterns: foundational principle](design-patterns.md#foundational-principle-linkml-elements-as-shacl-shapes)), swapping or supplementing the underlying ontology mappings does not require restructuring the schema.
 
 ### Life sciences (RO-Crate / Schema.org)
 
