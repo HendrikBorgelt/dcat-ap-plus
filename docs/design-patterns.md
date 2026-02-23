@@ -246,7 +246,7 @@ Research data is often produced in multi-step pipelines: an instrument generates
 
 Concrete example: An NMR spectrometer produces a raw FID (Free Induction Decay) dataset. Software then performs a Fourier transform and peak assignment on that raw data, producing a structural assignment dataset. The `AnalysisSourceData` node links the two, preserving the full provenance chain.
 
-Note that all three — `DataAnalysis`, `AnalysisDataset`, and `AnalysisSourceData` — share `class_uri` values with their parents (`prov:Activity`, `dcat:Dataset`, `prov:Entity` respectively). They are different node shapes, not new ontology classes. See [Foundational Principle](#foundational-principle-linkml-classes-as-node-shapes).
+Note that all three — `DataAnalysis`, `AnalysisDataset`, and `AnalysisSourceData` — share `class_uri` values with their parents (`prov:Activity`, `dcat:Dataset`, `prov:Entity` respectively). They are different node shapes, not new ontology classes. See [Foundational Principle](#foundational-principle-linkml-elements-as-shacl-shapes).
 
 ---
 
