@@ -28,15 +28,15 @@ The [SEMIC blog post on Application Profile modelling](https://interoperable-eur
 
 ---
 
-## Foundational principle: LinkML classes as node shapes
+## Foundational principle: LinkML elements as SHACL shapes
 
 This is the single most important concept for understanding and extending DCAT-AP+.
 
-DCAT-AP+ is an **application profile** (a graph shape specification), not an ontology. Its LinkML classes and slots correspond to **SHACL node shapes and property shapes**, not to OWL classes and properties. The ontology terms they constrain are referenced via the LinkML metamodel slots `class_uri` and `slot_uri`.
+DCAT-AP+ is an **application profile**, a graph shape specification, not an ontology. Its LinkML classes correspond to **SHACL node shapes** and its slots to **SHACL property shapes**. The ontology terms they constrain are referenced via `class_uri` (on classes) and `slot_uri` (on properties), but the LinkML elements themselves are not those ontology terms.
 
-This means **multiple LinkML classes can map to the same ontology class**. Each represents a different *usage context* (node shape) for that ontology class.
+This separation has a concrete consequence: **multiple LinkML elements can reference the same ontology term**. Each represents a different *usage context*, a different shape, for that term.
 
-### Example from the schema
+### For classes: multiple node shapes, one ontology class
 
 Consider these three DCAT-AP+ classes:
 
@@ -56,19 +56,57 @@ AnalysisSourceData:
   # most specific: data produced by a prior activity, now being analysed
 ```
 
-All three have `class_uri: prov:Entity`. In the generated SHACL, they become three distinct node shapes, each with different property constraints, that all target `prov:Entity`. This is exactly the "entity profile" mechanism the SEMIC blog post calls for: different profiles of the same entity, each with a unique identifier, without redefining the ontology term for that entity.
+All three have `class_uri: prov:Entity`. In the generated SHACL, they become three distinct node shapes that all target `prov:Entity`, but each with different property constraints. This is exactly the "entity profile" mechanism that the [SEMIC blog post on application profile modelling](https://interoperable-europe.ec.europa.eu/collection/semic-support-centre/application-profiles-what-are-they-and-how-model-and-reuse-them-properly-look-through-dcat-ap) calls for: different profiles of the same entity, each with a unique shape identifier, without minting a new OWL class.
 
-### What this means for profile developers
+### For slots: property shapes with replaceable predicates
 
-When you extend DCAT-AP+ for your domain (e.g. ChemDCAT-AP), you create new LinkML classes using `is_a` to inherit from DCAT-AP+ classes. Your new class may keep the parent's `class_uri` (if it's a more constrained usage of the same concept) or provide its own if it should map to a different ontology class.
+The same logic applies to slots. DCAT-AP+ assigns `slot_uri` values to its slots. These are the RDF predicates used in the generated triples. When a domain-specific profile creates a sub-slot (via `is_a`), it inherits the parent's structural role but may assign a different `slot_uri`:
 
-!!! warning "Changing `class_uri` affects PROV-O interoperability"
-    If you assign a different `class_uri`, your instances will no longer be typed as the parent's PROV-O class. SPARQL queries expecting e.g. `?x a prov:Agent` will miss them. This is fine if your domain ontology is aligned with PROV-O (as BFO-based ontologies are, via the [BFO → PROV-O mapping](https://doi.org/10.1038/s41597-025-04580-1)), because a reasoner can infer the PROV-O type. If your ontology is not aligned, consider whether losing PROV-O discoverability is acceptable for your use case. You can use `rdf_type` for multiple type assertions, see: [Pattern 3: Flexible classification (ClassifierMixin)](design-patterns.md#pattern-3-flexible-classification-classifiermixin)
+```yaml
+# In DCAT-AP+:
+has_quantitative_attribute:
+  slot_uri: dcterms:relation      # ← intentionally generic default
+  range: QuantitativeAttribute
 
-Either way, you are defining a **new node shape**, not a new OWL class.
+# In a domain-specific profile:
+has_temperature:
+  is_a: has_quantitative_attribute
+  slot_uri: SIO:000008            # ← domain-specific predicate
+  range: Temperature              # ← narrower range
+```
+
+The sub-slot plays the same role in the graph shape as the parent, but the RDF predicate changes. The DCAT-AP+ default predicates (`dcterms:relation` for attributes, `dcterms:subject` for aboutness) are intentionally semantics-thin. They were chosen as the lowest common denominator that avoids conflicting with domain-specific vocabularies, not to carry deep ontological commitments.
+
+For a worked example of vocabulary replacement including the interoperability considerations, see the [ChemDCAT-AP ontology alignment documentation](https://nfdi-de.github.io/chem-dcat-ap/ontology-alignment/).
+
+### What this means for extending DCAT-AP+
+
+When you create a domain profile, you define **new shapes**, not new ontology terms. Your LinkML classes inherit slots from DCAT-AP+ classes via `is_a` and may:
+
+- **Keep the parent's `class_uri`**: if your class is a more constrained usage of the same ontology concept (a narrower shape, not a new type). This preserves discoverability: SPARQL queries for the parent type still find your instances.
+- **Assign a different `class_uri`**: if your class should map to a domain ontology term. Your instances will then be typed with that domain term, not the parent's PROV-O class. If your ontology is aligned with PROV-O (as BFO-based ontologies are, via the [BFO → PROV-O mapping](https://doi.org/10.1038/s41597-025-04580-1)), a reasoner can still infer the PROV-O type. If it is not aligned, consider whether losing PROV-O discoverability is acceptable, or use `rdf_type` for explicit multi-typing (see [Pattern 3: ClassifierMixin](#pattern-3-flexible-classification-classifiermixin)).
+
+The same applies to `slot_uri` on sub-slots: keep the parent's predicate for interoperability, or replace it with a semantically richer domain predicate where the generic default is insufficient.
 
 !!! warning "Don't confuse LinkML inheritance with OWL subclassing"
-    `is_a: EvaluatedEntity` in LinkML means "this new LinkML class inherits the slots of EvaluatedEntity." It does **not** generate an `rdfs:subClassOf` axiom. The ontological alignment is controlled solely by `class_uri` and `rdf_type`.
+    `is_a: EvaluatedEntity` in LinkML means "this LinkML class inherits the slots of EvaluatedEntity." It does **not** generate an `rdfs:subClassOf` axiom. The ontological alignment is controlled solely by `class_uri`. Likewise, a sub-slot does not generate `rdfs:subPropertyOf`. It inherits the parent's structural constraints, not its RDF predicate (unless `slot_uri` is left unchanged).
+
+!!! warning "Blank node duplication when projecting between vocabularies"
+    If a knowledge graph generates RDF from the same instance data against both the DCAT-AP+ and a domain-specific schema, any inlined node without an `id` (i.e. a blank node) will be created twice, once per schema, with different predicates connecting it to its parent:
+
+    ```turtle
+    # From DCAT-AP+ schema
+    ex:sample-001 dcterms:relation _:b1 .
+    _:b1 prov:value 300.0 .
+
+    # From domain-specific schema (different slot_uri)
+    ex:sample-001 <domain:hasAttribute> _:b2 .
+    _:b2 prov:value 300.0 .
+    ```
+
+    `_:b1` and `_:b2` are structurally identical but distinct blank nodes. Queries aggregating values will produce wrong results.
+
+    To avoid this: (a) ensure all inlined nodes carry IRIs, or (b) generate RDF from the domain-specific schema only and use SPARQL CONSTRUCT rules to add the DCAT-AP+ predicates to the existing nodes (see [ChemDCAT-AP ontology alignment documentation](https://nfdi-de.github.io/chem-dcat-ap/ontology-alignment/).
 
 For more on how to extend DCAT-AP+ see our [Rules for domain profiles](how-to-extend.md).
 
