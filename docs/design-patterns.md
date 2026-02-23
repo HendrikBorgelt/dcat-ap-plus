@@ -36,6 +36,8 @@ DCAT-AP+ is an **application profile**, a graph shape specification, not an onto
 
 This separation has a concrete consequence: **multiple LinkML elements can reference the same ontology term**. Each represents a different *usage context*, a different shape, for that term.
 
+Accordingly, DCAT-AP+ often names its classes and slots differently from the OWL terms they reference. This serves three purposes: it signals that these are (different) shapes, not the ontology terms themselves; it follows LinkML naming conventions (e.g. snake_case for slots); and it allows more suitable labels where the OWL term label might be ambiguous or opaque for our usage context.
+
 ### For classes: multiple node shapes, one ontology class
 
 Consider these three DCAT-AP+ classes:
@@ -143,10 +145,10 @@ DCAT-AP+ must accommodate data-generating activities across all research domains
 
 A literature analysis that produces a dataset is a `prov:Activity` that `prov:generated` a `dcat:Dataset`. It is not a SOSA `Observation` of an `ObservedProperty`. A humanities researcher should not be forced into an observation-centric vocabulary to describe their data provenance.
 
-PROV-O's generality is a feature in this context: its starting point terms (`Activity`, `Entity`, `Agent`, `used`, `wasGeneratedBy`, `wasAssociatedWith`) are abstract enough to describe any data-producing process without imposing domain-specific assumptions. Domain profiles can then add precision where needed — ChemDCAT-AP adds chemical reaction roles, an NMR profile adds spectroscopy-specific constraints — without the base layer excluding entire research disciplines.
+PROV-O's generality is a feature in this context: its starting point terms (`Activity`, `Entity`, `Agent`, `used`, `wasGeneratedBy`, `wasAssociatedWith`) are abstract enough to describe any data-producing process without imposing domain-specific assumptions. Domain-specific profiles can then add precision where needed. For example, ChemDCAT-AP adds chemical substances and reaction relevant classes and slots.
 
 !!! note "Domain profiles can still reference SOSA or P-Plan"
-    Nothing prevents a domain profile from adding `exact_mappings` or `close_mappings` to SOSA or P-Plan terms on its classes. For example, a sensor-network profile could map `DataGeneratingActivity` → `sosa:Observation` and `Device` → `sosa:Sensor`. The PROV-O base layer does not preclude this — it simply does not require it.
+    Nothing prevents a domain profile from adding `exact_mappings` or `close_mappings` to SOSA or P-Plan terms on its classes. For example, a sensor-network profile could map `DataGeneratingActivity` → `sosa:Observation` and `Device` → `sosa:Sensor`. The PROV-O base layer does not preclude this. It simply does not require it.
 
 
 ### The Activity pattern
@@ -172,7 +174,7 @@ Activity:
     - part_of                    # dcterms:isPartOf → Activity
 ```
 
-The slot-to-predicate mappings (shown as comments) are defined via `slot_uri` in the schema. They reuse established vocabulary terms verbatim — DCAT-AP+ does not mint new RDF properties where existing ones suffice.
+The slots are aligned to the PROV-O predicates and ranges from the `prov:Activity` base pattern, as well as to basic DC Terms via `slot_uri` in the schema (shown as comments).
 
 ### AgenticEntity: why agents, not entities
 
@@ -195,7 +197,7 @@ Software:
 ```
 
 !!! note "Why not `foaf:Agent`?"
-    DCAT-AP already uses `foaf:Agent` for people and organisations responsible for a dataset's *publication*. `AgenticEntity` (mapped to `prov:Agent`) serves a different purpose: it describes what was involved in the dataset's *generation*. Also, it is part of the core PROV-O activity pattern and should thus be reused. We renamed it to avoid confusion between these two distinct roles.
+    DCAT-AP already uses `foaf:Agent` for people and organisations responsible for a dataset's *publication*. `AgenticEntity` (mapped to `prov:Agent`) serves a different purpose: it describes what was involved in the dataset's *generation*. Also, it is part of the core PROV-O `Activity` pattern and should thus be reused. We renamed it to avoid confusion between these two distinct shapes.
 
 ### DataGeneratingActivity: the specialization for data production
 

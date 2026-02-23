@@ -38,4 +38,4 @@ In conversations with NFDI colleagues from the life sciences, who use [RO-Crate]
 
 ## Using DCAT-AP+ in your project?
 
-If you are building a domain profile on DCAT-AP+, see the [extension rules](how-to-extend.md) for the contract between DCAT-AP+ and downstream schemas. We welcome additions to this page — open a PR or [start a discussion](https://github.com/nfdi-de/dcat-ap-plus/discussions).
+If you are building a domain profile on DCAT-AP+, see the [extension rules](how-to-extend.md) for the contract between DCAT-AP+ and downstream schemas. We welcome additions to this page. Feel free to open an issue or pull request.

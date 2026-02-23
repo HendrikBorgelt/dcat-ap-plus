@@ -2,7 +2,7 @@
 
 ## Versioning scheme: SchemaVer
 
-DCAT-AP+ follows the **SchemaVer** scheme ([introduced by Snowplow](https://snowplow.io/blog/introducing-schemaver-for-semantic-versioning-of-schemas), also used by [Human Cell Atlas](https://github.com/HumanCellAtlas/metadata-schema/blob/master/docs/evolution.md#schema-versioning) and [OpenLineage](https://github.com/OpenLineage/OpenLineage/blob/main/spec/Versioning.md)). SchemaVer is designed for data schemas, where the critical question is *"will existing data still validate?"* — unlike SemVer, which is designed for code APIs.
+DCAT-AP+ follows the **SchemaVer** scheme ([introduced by Snowplow](https://snowplow.io/blog/introducing-schemaver-for-semantic-versioning-of-schemas), also used by [Human Cell Atlas](https://github.com/HumanCellAtlas/metadata-schema/blob/master/docs/evolution.md#schema-versioning) and [OpenLineage](https://github.com/OpenLineage/OpenLineage/blob/main/spec/Versioning.md)). SchemaVer is designed for data schemas, where the critical question is *"will existing data still validate?"*, unlike SemVer, which is designed for code APIs.
 
 Given a version number **MODEL.REVISION.ADDITION**:
 
@@ -38,7 +38,7 @@ During development, the version string in the schema YAML header is managed by [
 version: "0.1.0rc3.post21.dev0+913fb36"
 ```
 
-This string is **auto-generated from git tags** — it should not be edited manually. The components mean:
+This string is **auto-generated from git tags**. Hence, it should not be edited manually. The components mean:
 
 | Part | Meaning |
 |---|---|

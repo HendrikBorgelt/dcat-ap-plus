@@ -14,8 +14,8 @@ DCAT-AP+ is designed to be imported and specialized. [ChemDCAT-AP](https://githu
 
 ## What you MAY do
 
-- **Subclass DCAT-AP+ classes** using `is_a`. For example, ChemDCAT-AP defines `SubstanceSample` as `is_a: EvaluatedEntity` with `class_uri: SIO:001378`.
-- **Create sub-slots** using `is_a` on slots. For example, ChemDCAT-AP defines `used_catalyst` as `is_a: carried_out_by` with `slot_uri: RXNO:0000425`. This narrows the range and adds semantic precision while maintaining backward compatibility — a client that only understands `carried_out_by` still sees the data.
+- **Subclass DCAT-AP+ classes** using `is_a`. For example, ChemDCAT-AP defines `SubstanceSample` as `is_a: EvaluatedEntity` with `class_uri: SIO:001378`. But you should make sure to remain PROV-O aligned. See [Foundational principle: LinkML elements as SHACL shapes](design-patterns.md#foundational-principle-linkml-elements-as-shacl-shapes) for guidance.
+- **Create sub-slots** using `is_a` on slots. For example, ChemDCAT-AP defines `used_catalyst` as `is_a: carried_out_by` with `slot_uri: RXNO:0000425`. This narrows the range and adds semantic precision while maintaining backward compatibility, if you stay PROV-O aligned. See [Foundational principle: LinkML elements as SHACL shapes](design-patterns.md#foundational-principle-linkml-elements-as-shacl-shapes) for guidance.
 - **Add new slots** to your domain classes.
 - **Constrain ranges** further (narrowing is allowed by DCAT-AP extension rules).
 - **Provide domain-specific enums** to bind `rdf_type` or `type` to specific controlled vocabularies.
@@ -23,9 +23,9 @@ DCAT-AP+ is designed to be imported and specialized. [ChemDCAT-AP](https://githu
 ## What you MUST NOT do
 
 - **Don't broaden cardinality** on inherited slots (e.g. don't make a `required` slot optional).
-- **Don't change `slot_uri` or `class_uri` on inherited DCAT-AP+ elements** — modifying the base schema's ontology mappings would break the RDF mapping for all profiles. You **may** assign different `class_uri` or `slot_uri` values on your own subclasses and sub-slots. See [Foundational principle: LinkML elements as SHACL shapes](design-patterns.md#foundational-principle-linkml-elements-as-shacl-shapes) for guidance.
-- **Don't add domain-specific classes directly to DCAT-AP+**. Create your own schema that imports it.
-- **Don't duplicate existing DCAT-AP classes or properties** — add new ones or specialize existing ones.
+- **Don't change `slot_uri` or `class_uri` on imported DCAT-AP+ elements!** Modifying the base schema's ontology mappings would break the RDF mapping for all profiles!
+- **Don't add domain-specific classes directly to DCAT-AP+!** Create your own schema that imports it.
+- **Don't duplicate existing DCAT-AP classes or properties!** Add new ones or specialize existing ones.
 
 ## Conformance checklist for your domain profile
 

@@ -1,6 +1,6 @@
 # DCAT-AP Plus Links to Use-case Specific Context (DCAT-AP+)
 
-DCAT-AP+ is a [LinkML](https://linkml.io/)-based extension of the [DCAT Application Profile 3.0](https://semiceu.github.io/DCAT-AP/releases/3.0.0/) that adds a **provenance layer** for describing *how* a dataset was generated and *what* it is about — using the [Starting Point Terms of PROV-O](https://www.w3.org/TR/prov-o/#description-starting-point-terms), the [QUDT ontology](https://www.qudt.org/), and [Dublin Core Terms](http://purl.org/dc/terms/).
+DCAT-AP+ is a [LinkML](https://linkml.io/)-based extension of the [DCAT Application Profile 3.0](https://semiceu.github.io/DCAT-AP/releases/3.0.0/) that adds a **provenance layer** for describing *how* a dataset was generated and *what* it is about, using the [Starting Point Terms of PROV-O](https://www.w3.org/TR/prov-o/#description-starting-point-terms), the [QUDT ontology](https://www.qudt.org/), and [Dublin Core Terms](http://purl.org/dc/terms/).
 
 DCAT-AP+ is **domain-agnostic**. It provides a generic set of classes and properties that any domain can import and specialize into its own application profile. [ChemDCAT-AP](https://github.com/nfdi-de/chem-dcat-ap) is the first such domain profile, built for chemistry and catalysis research data.
 
@@ -41,7 +41,7 @@ was_generated_by:
           title: "JEOL ECX NMR spectrometer"
 ```
 
-This is valid DCAT-AP+ instance data. Every class and property is mapped to an established ontology term and instance data can be validated and converted to RDF using the LinkML tooling. The schema itself ([dcat_ap_plus.yaml](schema/dcat_ap_plus.yaml)) serves as the single source of truth from which SHACL shapes, JSON Schema, Python/Pydantic data classes, and an HTML schema reference documentation are generated — all guaranteed to be coherent.
+This is valid DCAT-AP+ instance data. Every class and property is mapped to an established ontology term and instance data can be validated and converted to RDF using the LinkML tooling. The schema itself ([dcat_ap_plus.yaml](schema/dcat_ap_plus.yaml)) serves as the single source of truth from which SHACL shapes, JSON Schema, Python/Pydantic data classes, and an HTML schema reference documentation are generated, which means all are guaranteed to be coherent.
 
 ## Documentation
 
