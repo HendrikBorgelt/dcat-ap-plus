@@ -254,6 +254,17 @@ The `has_quantity_type` and `unit` attributes use [LinkML enum bindings](https:/
 !!! warning "Experimental feature"
     LinkML's enum binding feature is declared in the schema but may not yet be fully supported by the `linkml-runtime` validation tooling. The bindings express the *intent* that values should come from QUDT vocabularies and will be enforced once the feature matures. In the meantime, validation of these constraints may require additional checks outside of `linkml-validate`.
 
+#### Design rationale: why a single-node pattern
+
+`QuantitativeAttribute` represents a **recorded value**. It is the number a researcher writes down or a software tool exports. It is not an ontological model of the physical property itself. This is a deliberate choice. More expressive models exist (notably in the OBO Foundry stack, which separates physical qualities from information entities *about* those qualities through multiple intermediate nodes). These models offer stronger reasoning support but require data producers to understand and instantiate multi-hop structures that are not intuitive outside the ontology engineering community.
+
+DCAT-AP+'s single-node pattern, `value` + `quantity kind` + `unit`, matches [QUDT](https://www.qudt.org/)'s `Quantity` model, which is an established standard for quantity representation in engineering, industrial, and web-of-data contexts. It is immediately understandable, directly queryable (one hop from entity to value), and sufficient for the structured discovery that DCAT-AP+ enables over plain DCAT-AP's free-text descriptions.
+
+The classification slots from the [ClassifierMixin](#pattern-3-flexible-classification-classifiermixin) provide an extension point: domain profiles can use `rdf_type` to classify an attribute more precisely (e.g. as a measured value vs. a specified parameter) without changing the structural pattern.
+
+!!! note "Alignment with richer measurement models"
+    Domain profiles that need the full expressivity of ontological measurement models (e.g. for reasoning over quality–datum–value chains) can subclass `QuantitativeAttribute` to add the necessary structure. The base pattern is intentionally minimal to remain accessible across research domains, from chemistry to digital humanities, where data producers have widely varying familiarity with formal ontology.
+
 #### Worked example: describing a measurement temperature
 
 Suppose an NMR measurement was performed at 298 K. In DCAT-AP+ instance data:
