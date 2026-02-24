@@ -7,8 +7,8 @@ theme:
   name: material
   # logo-customization: https://github.com/squidfunk/mkdocs-material/discussions/2729
   custom_dir: docs/overrides
-  logo_dark_mode: 'images/DCAT-AP-PLUS-Logo_bigger.svg'
-  logo_light_mode: 'images/DCAT-AP-PLUS-Logo_bigger.svg'
+  logo_dark_mode: 'images/DCAT-AP-PLUS-Logo.png'
+  logo_light_mode: 'images/DCAT-AP-PLUS-Logo.png'
 
   # Toggling between default/light/dark color schemes
   # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/
