@@ -279,7 +279,7 @@ QuantitativeAttribute:
 The `has_quantity_type` and `unit` attributes use [LinkML enum bindings](https://linkml.io/linkml/schemas/enums.html) to constrain their values to QUDT's [QuantityKind](http://qudt.org/vocab/quantitykind/) and [Unit](http://qudt.org/vocab/unit/) vocabularies respectively.
 
 !!! warning "Experimental feature"
-    LinkML's enum binding feature is declared in the schema but may not yet be fully supported by the `linkml-runtime` validation tooling. The bindings express the *intent* that values should come from QUDT vocabularies () and will be enforced once the feature matures. In the meantime, validation of these constraints may require additional checks outside of `linkml-validate`.
+    LinkML's enum binding feature is declared in the schema but may not yet be fully supported by the `linkml-runtime` validation tooling. The bindings express the *intent* that values should come from QUDT vocabularies and will be enforced once the feature matures. In the meantime, validation of these constraints may require additional checks outside of `linkml-validate`.
 
 #### Design rationale: why a single-node pattern
 
