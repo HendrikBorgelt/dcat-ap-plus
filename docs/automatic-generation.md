@@ -1,6 +1,6 @@
 # Automatic Generation of DCAT-AP+
 
-In DCAT-AP+ we do not manually recreate DCAT-AP in LinkML but **auto-generate** it as the base layer from the authoritative SHACL shapes published by SEMIC. This ensures that the LinkML schema stays faithful to the official specification and can be updated systematically when DCAT-AP evolves.
+In DCAT-AP+ we do not manually recreate DCAT-AP in LinkML but **auto-generate** it as the base layer from the authoritative SHACL shapes published by SEMIC. This ensures that the LinkML schema stays fully aligned with the official specification and can be updated systematically when DCAT-AP evolves.
 
 ## Why auto-generate?
 
