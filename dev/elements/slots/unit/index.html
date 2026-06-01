@@ -481,6 +481,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-and-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type and Range
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cardinality-and-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cardinality and Requirements
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -545,10 +569,9 @@
 
 
 <h1 id="slot-unit">Slot: unit</h1>
-<p>URI: <a href="http://qudt.org/schema/qudt/unit">qudt:unit</a>
-Alias: unit</p>
+<div>
+<p>URI: <a href="http://qudt.org/schema/qudt/unit">qudt:unit</a></p>
 <!-- no inheritance hierarchy -->
-
 <h2 id="applicable-classes">Applicable Classes</h2>
 <table>
 <thead>
@@ -567,18 +590,77 @@ Alias: unit</p>
 </tbody>
 </table>
 <h2 id="properties">Properties</h2>
-<ul>
-<li>
-<p>Range: <a href="../../classes/DefinedTerm/">DefinedTerm</a></p>
-</li>
-<li>
-<p>Recommended: True</p>
-</li>
-</ul>
+<h3 id="type-and-range">Type and Range</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Range</td>
+<td><a href="../../classes/DefinedTerm/">DefinedTerm</a></td>
+</tr>
+<tr>
+<td>Domain Of</td>
+<td><a href="../../classes/QuantitativeAttribute/">QuantitativeAttribute</a></td>
+</tr>
+<tr>
+<td>Slot URI</td>
+<td><a href="http://qudt.org/schema/qudt/unit">qudt:unit</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="cardinality-and-requirements">Cardinality and Requirements</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recommended</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>### Slot Characteristics</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Owner</td>
+<td><a href="../../classes/QuantitativeAttribute/">QuantitativeAttribute</a></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary>Advanced Properties</summary>
+**Term Bindings:**
+- EnumBinding({
+  'range': 'QUDTUnitEnum',
+  'obligation_level': ObligationLevelEnum(text='RECOMMENDED', description='The metadata element is recommended to be present in the model'),
+  'binds_value_of': 'id',
+  'description': 'Restricts the allowable defined terms to the QUDT Unit vocabulary.'
+})
+
+</details>
 <h2 id="identifier-and-mapping-information">Identifier and Mapping Information</h2>
 <h3 id="schema-source">Schema Source</h3>
 <ul>
-<li>from schema: https://w3id.org/nfdi-de/dcat-ap-plus/</li>
+<li>from schema: <a href="https://w3id.org/nfdi-de/dcat-ap-plus/">https://w3id.org/nfdi-de/dcat-ap-plus/</a></li>
 </ul>
 <h2 id="mappings">Mappings</h2>
 <table>
@@ -605,7 +687,6 @@ Alias: unit</p>
 <span class="nt">from_schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://w3id.org/nfdi-de/dcat-ap-plus/</span>
 <span class="nt">rank</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
 <span class="nt">slot_uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qudt:unit</span>
-<span class="nt">alias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unit</span>
 <span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">QuantitativeAttribute</span>
 <span class="nt">domain_of</span><span class="p">:</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">QuantitativeAttribute</span>
@@ -618,12 +699,16 @@ Alias: unit</p>
 <span class="nt">recommended</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
 </details>
+</div>
 
 
 
 
 
 
+
+  
+  
 
 
 
