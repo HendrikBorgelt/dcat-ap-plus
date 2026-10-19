@@ -30,7 +30,7 @@ from pydantic import (
 
 
 metamodel_version = "1.12.0"
-version = "0.0.0-dev"
+version = "0.1.0rc5.post2.dev0+11a9d7ca"
 
 
 class ConfiguredBaseModel(BaseModel):
@@ -149,7 +149,7 @@ linkml_meta = LinkMLMeta({'default_prefix': 'dcatap_plus',
      'see_also': ['https://github.com/StroemPhi/dcat-4C-ap',
                   'https://github.com/HendrikBorgelt/DCAT-ap_as_LinkML_template/blob/main/src/dcatlinkml/schema/dcatlinkml.yaml',
                   'https://gitlab.com/opensourcelab/scientificdata/scidats/-/blob/feature/linkml-schemata/schemata/metadata_model_scidats_dcat_ap.yaml?ref_type=heads'],
-     'source_file': 'src\\dcat_ap_plus\\schema\\dcat_ap_plus.yaml',
+     'source_file': 'src/dcat_ap_plus/schema/dcat_ap_plus.yaml',
      'subsets': {'domain_agnostic_core': {'description': 'The elements of this '
                                                          'subset are considered '
                                                          'the core layer of our '
