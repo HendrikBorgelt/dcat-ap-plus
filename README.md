@@ -55,9 +55,7 @@ See also the documentation of the template: https://github.com/linkml/linkml-pro
     Note: Environments with private PyPi repository may need extra configuration (example):
 
       export UV_DEFAULT_INDEX=https://nexus.example.com/repository/pypi-all/simple
-*
-
-    Copier
+* Copier
 
     Copier is a tool for generating projects based on a template (like this one!). It also allows re-configuring the projects and to keep them updated when the original template changes. To insert dates into the template, copier requires [jinja2_time](https://github.com/hackebrot/jinja2-time) in the copier environment. Install both with uv by running:
 
@@ -71,14 +69,73 @@ See also the documentation of the template: https://github.com/linkml/linkml-pro
 
   To generate project artefacts run:
           `just gen-project`: generates all other representations
+          `just site`: Builds all artefacts but does not deploy the gh-pages
           `just deploy`: deploys site
+          `just test`: runs all tests
           `just testdoc`: locally builds docs and runs test server
+
+### Code Quality with pre-commit
+
+The project provides a [pre-commit](https://pre-commit.com/) configuration with several code quality tools:
+
+- [yamllint](https://github.com/adrienverge/yamllint) — consistent formatting of schema YAML files
+- [ruff](https://docs.astral.sh/ruff/) — formatting and linting of Python code
+- [codespell](https://github.com/codespell-project/codespell) and [typos](https://github.com/crate-ci/typos) — spell checkers
+
+To use pre-commit, install it and activate it at the root of the repository:
+
+```shell
+uv tool install pre-commit --with pre-commit-uv
+pre-commit install
+```
+
+Once installed, pre-commit will run checks automatically on every commit and reject commits that contain errors; it will also auto-correct several types of errors. The use of [pre-commit-uv](https://pypi.org/project/pre-commit-uv/) is optional but recommended as it accelerates the initial setup.
+
+You can also run all checks manually at any time:
+
+```shell
+pre-commit run -a
+```
 
 ### Regenerate schema files from DCAT-AP SHACL shapes
 
-To regenerate the DCAT-AP LinkML representation as well as the PLUS extension run:
+#### ⚠️ Critical Rule: Never Edit the YAML Files Directly
+The files [`dcat_ap_linkml.yaml`](schema/dcat_ap_linkml.yaml) and [`dcat_ap_plus.yaml`](schema/dcat_ap_plus.yaml) are **build artifacts**, not source code.
 
-    uv run python src/dcat_ap_shacl_2_linkml.py
+_**Do not manually edit these YAML files to add classes, slots, change constraints, or edit its metadata.**_
+
+All schema changes **must** be made by modifying the Python generation script (`dcat_ap_shacl_2_linkml.py`).
+*   To change the **DCAT-AP base**: Update the logic in `parse_dcat_ap_shacl_shapes()` (e.g., to handle new SHACL shapes).
+*   To change the **DCAT-AP+ extension**: Update the logic in `build_dcatap_plus()` (e.g., adding slots to `extend_dataset()`).
+
+#### Correct Workflow for Schema Changes
+
+To ensure your changes are captured correctly and the dynamic versioning updates to the right commit hash, follow this exact sequence:
+
+1.  **Edit the Script:** Make your changes to `src/dcat_ap_plus/dcat_ap_shacl_2_linkml.py`.
+2.  **Commit the Script:**
+    ```bash
+    git add src/dcat_ap_plus/dcat_ap_shacl_2_linkml.py
+    git commit -m "feat: update generation logic for [your change]"
+    ```
+    *(This creates a new commit hash. The versioning system needs this commit to exist before it can calculate the new version.)*
+3.  **Run the Generation Script:**
+    ```bash
+    uv run python src/dcat_ap_plus/dcat_ap_shacl_2_linkml.py
+    ```
+    *   **Note:** The script automatically runs `uv sync` at the start. This ensures the installed package metadata matches your **new** commit hash, allowing the script to inject the correct version (e.g., `...+g<new_commit_hash>`) into the YAML.
+    *   This step generates/overwrites `dcat_ap_linkml.yaml` and `dcat_ap_plus.yaml`.
+4.  **Validate and Regenerate Derived Artifacts:**
+    Update the Python datamodel, documentation, and other artifacts from the newly versioned YAML:
+    ```bash
+    just gen-project _test-python _test-examples
+    # Or specific commands for docs/tests as needed
+    ```
+5.  **Commit the Generated Files:**
+    ```bash
+    git add src/dcat_ap_plus/schema/*.yaml src/dcat_ap_plus/datamodel/ project/ docs/elements/
+    git commit -m "chore: regenerate schema and artifacts with new version"
+    ```
 
 ### Test data validation and conversion
 
