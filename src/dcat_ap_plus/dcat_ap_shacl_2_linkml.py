@@ -106,12 +106,15 @@ def ensure_synced():
             ["uv", "sync", "--reinstall-package", "dcat_ap_plus"],
             check=True,
             cwd=root_dir,
-            stdout=subprocess.DEVNULL,  # Hide standard output to keep logs clean
-            stderr=subprocess.STDOUT  # Show errors if they happen
+            capture_output=True,  # Output is captured and only printed if 'uv sync' fails
+            text=True
         )
         print("INFO: Environment synced successfully.")
     except subprocess.CalledProcessError as e:
         print(f"WARNING: 'uv sync' failed. Version metadata might be stale. Error: {e}")
+        print(f"         uv output (exit status {e.returncode}):")
+        for line in ((e.stdout or '') + (e.stderr or '')).strip().splitlines():
+            print(f"         | {line}")
     except FileNotFoundError:
         print("WARNING: 'uv' command not found. Please ensure uv is installed and in PATH.")
 
@@ -1118,6 +1121,10 @@ def main():
     dump_schema(build_dcatap_linkml(),filename='dcat_ap_linkml.yaml')
     # 3. Build and dump DCAT-AP-PLUS
     dump_schema(build_dcatap_plus(),filename='dcat_ap_plus.yaml')
+    # 4. Ensure the environment is up-to-date with Git tags/commits for the dynamic version tags
+    ensure_synced()
+
+
 
 if __name__ == '__main__':
     main()
