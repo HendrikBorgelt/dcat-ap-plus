@@ -40,8 +40,7 @@ PREFIX_MAP = {
     'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
     'sh': 'http://www.w3.org/ns/shacl#',
     'skos': 'http://www.w3.org/2004/02/skos/core#',
-    'vl': 'https://purl.eu/ns/shacl#',
-    'iana': 'https://www.iana.org/assignments/',
+    'iana.mediatype': 'https://www.iana.org/assignments/',
     'epos': 'https://www.epos-eu.org/epos-dcat-ap#',
     'schema': 'https://schema.org/'}
 
@@ -1013,8 +1012,8 @@ def build_dcatap_plus():
     builder.schema.prefixes['IAO'] = 'http://purl.obolibrary.org/obo/IAO_'
     builder.schema.prefixes['SIO'] = 'http://semanticscience.org/resource/SIO_'
     builder.schema.prefixes['NCIT']='http://purl.obolibrary.org/obo/NCIT_'
-    builder.schema.prefixes['SOSA']='http://www.w3.org/ns/sosa/'
-    builder.schema.prefixes['AFE']='http://purl.allotrope.org/ontologies/equipment#AFE_'
+    builder.schema.prefixes['sosa']='http://www.w3.org/ns/sosa/'
+    builder.schema.prefixes['allotrope.equipment']='http://purl.allotrope.org/ontologies/equipment#AFE_'
     builder.schema.prefixes['qudt']= 'http://qudt.org/schema/qudt/'
     builder.schema.prefixes['schema']= 'http://schema.org/'
     builder.schema.prefixes['ex']= 'http://example.org/'
