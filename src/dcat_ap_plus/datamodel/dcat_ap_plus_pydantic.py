@@ -30,7 +30,7 @@ from pydantic import (
 
 
 metamodel_version = "1.12.0"
-version = "0.1.0rc5"
+version = "0.0.0-dev"
 
 
 class ConfiguredBaseModel(BaseModel):
@@ -110,8 +110,6 @@ linkml_meta = LinkMLMeta({'default_prefix': 'dcatap_plus',
                           'prefix_reference': 'http://data.europa.eu/eli/ontology#'},
                   'epos': {'prefix_prefix': 'epos',
                            'prefix_reference': 'https://www.epos-eu.org/epos-dcat-ap#'},
-                  'ex': {'prefix_prefix': 'ex',
-                         'prefix_reference': 'http://example.org/'},
                   'foaf': {'prefix_prefix': 'foaf',
                            'prefix_reference': 'http://xmlns.com/foaf/0.1/'},
                   'iana.mediatype': {'prefix_prefix': 'iana.mediatype',

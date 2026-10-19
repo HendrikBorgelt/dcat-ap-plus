@@ -59,7 +59,7 @@ from linkml_runtime.linkml_model.types import Date, Decimal, Float, Integer, Str
 from linkml_runtime.utils.metamodelcore import Decimal, URIorCURIE, XSDDate
 
 metamodel_version = "1.12.0"
-version = "0.1.0rc5"
+version = "0.0.0-dev"
 
 # Namespaces
 BFO = CurieNamespace('BFO', 'http://purl.obolibrary.org/obo/BFO_')
@@ -75,7 +75,6 @@ DCATAP_PLUS = CurieNamespace('dcatap_plus', 'https://w3id.org/nfdi-de/dcat-ap-pl
 DCTERMS = CurieNamespace('dcterms', 'http://purl.org/dc/terms/')
 ELI = CurieNamespace('eli', 'http://data.europa.eu/eli/ontology#')
 EPOS = CurieNamespace('epos', 'https://www.epos-eu.org/epos-dcat-ap#')
-EX = CurieNamespace('ex', 'http://example.org/')
 FOAF = CurieNamespace('foaf', 'http://xmlns.com/foaf/0.1/')
 IANA_MEDIATYPE = CurieNamespace('iana_mediatype', 'https://www.iana.org/assignments/')
 LINKML = CurieNamespace('linkml', 'https://w3id.org/linkml/')

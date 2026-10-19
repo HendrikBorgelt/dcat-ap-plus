@@ -1016,7 +1016,6 @@ def build_dcatap_plus():
     builder.schema.prefixes['allotrope.equipment']='http://purl.allotrope.org/ontologies/equipment#AFE_'
     builder.schema.prefixes['qudt']= 'http://qudt.org/schema/qudt/'
     builder.schema.prefixes['schema']= 'http://schema.org/'
-    builder.schema.prefixes['ex']= 'http://example.org/'
     builder.schema.title = 'DCAT-AP-PLUS'
     builder.schema.license = 'CC-BY 4.0'
     builder.schema.default_range = 'string'

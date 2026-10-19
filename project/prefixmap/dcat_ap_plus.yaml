@@ -12,7 +12,6 @@
    "dcterms": "http://purl.org/dc/terms/",
    "eli": "http://data.europa.eu/eli/ontology#",
    "epos": "https://www.epos-eu.org/epos-dcat-ap#",
-   "ex": "http://example.org/",
    "foaf": "http://xmlns.com/foaf/0.1/",
    "iana.mediatype": "https://www.iana.org/assignments/",
    "linkml": "https://w3id.org/linkml/",
